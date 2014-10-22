@@ -25,6 +25,7 @@ public class Imagen {
 	double entropia; // double?
 	int[] pos = new int[2]; //pos[0]=x, pos[1]=y
 	int nivelGris;
+	private double[] ROI = new double[]{0,0,0,0}; //iniciox,inicioy,finx,finy
 	
 	private BufferedImage imageActual;
     
@@ -88,6 +89,14 @@ public class Imagen {
 
 	public void setImageActual(BufferedImage imageActual) {
 		this.imageActual = imageActual;
+	}
+
+	public double[] getROI() {
+		return ROI;
+	}
+
+	public void setROI(double[] rOI) {
+		ROI = rOI;
 	}
 
 }
