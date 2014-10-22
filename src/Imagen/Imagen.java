@@ -54,31 +54,40 @@ public class Imagen {
                   
         }
         //Asignamos la imagen cargada a la propiedad imageActual
-        imageActual=bmp;
+        setImageActual(bmp);
         //Retornamos el valor
         return bmp;
     }
     
     public BufferedImage escalaGrises(){
         //Variables que almacenarán los píxeles
-        int mediaPixel,colorSRGB;
+        int gris;
         Color colorAux;
                  
         //Recorremos la imagen píxel a píxel
-        for( int i = 0; i < imageActual.getWidth(); i++ ){
-            for( int j = 0; j < imageActual.getHeight(); j++ ){
+        for( int i = 0; i < getImageActual().getWidth(); i++ ){
+            for( int j = 0; j < getImageActual().getHeight(); j++ ){
                 //Almacenamos el color del píxel
-                colorAux=new Color(this.imageActual.getRGB(i, j));
+                colorAux=new Color(this.getImageActual().getRGB(i, j));
                 //Calculamos la media de los tres canales (rojo, verde, azul)
-                mediaPixel=(int)((colorAux.getRed()+colorAux.getGreen()+colorAux.getBlue())/3);
+                gris=(int)(colorAux.getRed()*0.299+colorAux.getGreen()*0.587+colorAux.getBlue()*0.114);
                 //Cambiamos a formato sRGB
-                colorSRGB=(mediaPixel << 16) | (mediaPixel << 8) | mediaPixel;
                 //Asignamos el nuevo valor al BufferedImage
-                imageActual.setRGB(i, j,colorSRGB);
+                
+                Color valor = new Color(gris, gris, gris);
+                getImageActual().setRGB(i, j, valor.getRGB());
             }
         }
         //Retornamos la imagen
-        return imageActual;
+        return getImageActual();
     }
+
+	public BufferedImage getImageActual() {
+		return imageActual;
+	}
+
+	public void setImageActual(BufferedImage imageActual) {
+		this.imageActual = imageActual;
+	}
 
 }
