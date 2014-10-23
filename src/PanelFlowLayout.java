@@ -30,7 +30,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, item2, item3, gris;
+    private JMenuItem abrir, item2, item3, gris, ROI;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -64,9 +64,6 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
    
     		   item2= new JMenuItem("Guardar Imagen");
     		   menu.add(item2);
-
-    		   item3= new JMenuItem("Cerrar");
-    		   menu.add(item3);
        
     		   menu= new JMenu("Editar");
     		   barra1.add(menu);
@@ -75,8 +72,9 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   menu.add(gris);
     		   gris.addActionListener(this);
    
-    		   item2= new JMenuItem("Cortar");
-    		   menu.add(item2);
+    		   ROI= new JMenuItem("Separar Región de interés");
+    		   menu.add(ROI);
+    		   ROI.addActionListener(this);
 
     		   item3= new JMenuItem("Pegar");
     		   menu.add(item3);
@@ -89,19 +87,21 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				Imagen im = new Imagen();
 				im.abrirImagen();
 				FrameInterno fi = new FrameInterno(im);
-				fi.setVisible(true);
-				fi.pack();
-				fi.moveToFront();
-				fi.setClosable(true);
-				fi.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-				fi.addMouseListener(fi);
 				panel.setVisible(true);
 				panel.add(fi);
-				System.out.println(panel.getAllFrames().length);
 			}
 			else if(e.getSource() == gris){
 				((FrameInterno)(panel.getSelectedFrame())).getImg().escalaGrises();
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
+			}
+			else if(e.getSource() == ROI){
+				Imagen im = new Imagen();
+				im.setImageActual(subImage(((FrameInterno)(panel.getSelectedFrame())).getImg().getImageActual(),((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[2]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[3]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1]));
+				FrameInterno fi = new FrameInterno(im);
+				panel.setVisible(true);
+				panel.add(fi);
+				fi.actualize();
+				//im.setImageActual(subImage(((FrameInterno)(panel.getSelectedFrame())).getImg().getImageActual(),((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0],((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1],((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[2]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0],((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[3]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1]));
 			}
 		}
        }
