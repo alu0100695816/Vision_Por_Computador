@@ -1,18 +1,25 @@
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -20,24 +27,38 @@ import javax.swing.event.InternalFrameListener;
 import Imagen.Imagen;
 
 
-public class FrameInterno extends JInternalFrame implements MouseListener, InternalFrameListener {
+public class FrameInterno extends JInternalFrame implements MouseListener, MouseMotionListener, InternalFrameListener {
 	private Imagen img;
 	private JLabel lab = new JLabel();
+	private JLabel lab2 = new JLabel("x:   y:   ");
 	private Graphics2D graph;
 	private Rectangle2D rect; 
-	private int desvX = 5;
-	private int desvY = 25;
+	private int desvX = 6;
+	private int desvY = 28;
 	private BufferedImage imgAux;
 
 	public FrameInterno(Imagen im) {
 		super( "img", false, true, false, false ); 
+		JPanel pan = new JPanel();
+		pan.setLayout(new BorderLayout());
 		img = im;
 		if(img.getImageActual() != null)lab.setIcon(new ImageIcon(img.getImageActual()));
-		add(lab);
+		pan.add(lab,BorderLayout.CENTER);
+		
+		JPanel statusPanel = new JPanel();
+		statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+		pan.add(statusPanel, BorderLayout.SOUTH);
+		statusPanel.setPreferredSize(new Dimension(pan.getWidth(), 20));
+		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
+		lab2.setHorizontalAlignment(SwingConstants.LEFT);
+		statusPanel.add(lab2);
+		setContentPane(pan);
 		setVisible(true);
+		pan.setVisible(true);
 		pack();
 		moveToFront();
 		addMouseListener(this);
+		addMouseMotionListener(this);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); 
 	}
 
@@ -90,14 +111,19 @@ public class FrameInterno extends JInternalFrame implements MouseListener, Inter
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+
+	}
+	
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		getImg().actualizarPos((int) (e.getPoint().getX()-desvX),(int) (e.getPoint().getY()-desvY));
+		lab2.setText("x: " + this.getImg().getPos()[0] + " y: " + this.getImg().getPos()[1]);
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		lab2.setText("x:  y:");
+
 	}
 	
 	static BufferedImage deepCopy(BufferedImage bi) {
@@ -147,6 +173,12 @@ public class FrameInterno extends JInternalFrame implements MouseListener, Inter
 
 	@Override
 	public void internalFrameDeactivated(InternalFrameEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -85,7 +85,6 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == abrir){
 				Imagen im = new Imagen();
-				im.abrirImagen();
 				FrameInterno fi = new FrameInterno(im);
 				panel.setVisible(true);
 				panel.add(fi);
@@ -95,13 +94,11 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
 			else if(e.getSource() == ROI){
-				Imagen im = new Imagen();
-				im.setImageActual(subImage(((FrameInterno)(panel.getSelectedFrame())).getImg().getImageActual(),((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[2]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[3]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1]));
+				Imagen im = new Imagen(subImage(((FrameInterno)(panel.getSelectedFrame())).getImg().getImageActual(),((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[2]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[3]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1]));
 				FrameInterno fi = new FrameInterno(im);
 				panel.setVisible(true);
 				panel.add(fi);
 				fi.actualize();
-				//im.setImageActual(subImage(((FrameInterno)(panel.getSelectedFrame())).getImg().getImageActual(),((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0],((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1],((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[2]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0],((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[3]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1]));
 			}
 		}
        }

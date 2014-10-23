@@ -18,17 +18,25 @@ public class Imagen {
 	 */
 	String formato; // Formato de la imagen //(?)String?
 	Histograma histograma; // Histograma
-	int[] tam = new int[2]; // tam[0]=filas, tam[1]=columnas
-	int[] minmax = new int[2]; // Rango de valores de grises. minmax[0]=valor minimo, minmax[1]=valor maximo
-	int brillo; // int?
-	int contraste; // int?
-	double entropia; // double?
-	int[] pos = new int[2]; //pos[0]=x, pos[1]=y
-	int nivelGris;
+	private int[] tam = new int[2]; // tam[0]=filas, tam[1]=columnas
+	private int[] minmax = new int[2]; // Rango de valores de grises. minmax[0]=valor minimo, minmax[1]=valor maximo
+	private int brillo; // int?
+	private int contraste; // int?
+	private double entropia; // double?
+	private int[] pos = new int[2]; //pos[0]=x, pos[1]=y
+	private int nivelGris;
 	private int[] ROI = new int[]{0,0,0,0}; //iniciox,inicioy,finx,finy
 	
 	private BufferedImage imageActual;
     
+	public Imagen(){
+		abrirImagen();
+	}
+	
+	public Imagen(BufferedImage img){
+		setImageActual(img);
+	}
+	
     //Método que devuelve una imagen abierta desde archivo
     //Retorna un objeto BufferedImagen
     public BufferedImage abrirImagen(){
@@ -97,6 +105,18 @@ public class Imagen {
 
 	public void setROI(int[] rOI) {
 		ROI = rOI;
+	}
+
+	public int[] getPos() {
+		return pos;
+	}
+
+	public void setPos(int[] pos) {
+		this.pos = pos;
+	}
+
+	public void actualizarPos(int i, int j) {
+		pos[0] = i; pos [1] = j;
 	}
 
 }
