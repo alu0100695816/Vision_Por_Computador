@@ -9,7 +9,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import com.sun.prism.Image;
 
 public class Imagen {
 
@@ -26,6 +25,7 @@ public class Imagen {
 	private int[] pos = new int[2]; //pos[0]=x, pos[1]=y
 	private int nivelGris;
 	private int[] ROI = new int[]{0,0,0,0}; //iniciox,inicioy,finx,finy
+	private double[] histogramArray = new double[256]; //Array que almacena el numero de pixeles que existen de cada tono de gris.
 	
 	private BufferedImage imageActual;
     
@@ -69,7 +69,12 @@ public class Imagen {
     }
     
     public BufferedImage escalaGrises(){
-        //Variables que almacenarán los píxeles
+        //Llenamos el array para el histograma de ceros
+    	for(int i = 0; i < 256; i++) {
+    		histogramArray[i] = 0;
+    	}
+    	
+    	//Variables que almacenarán los píxeles
         int gris;
         Color colorAux;
                  
@@ -80,6 +85,8 @@ public class Imagen {
                 colorAux=new Color(this.getImageActual().getRGB(i, j));
                 //Calculamos la media de los tres canales (rojo, verde, azul)
                 gris=(int)(colorAux.getRed()*0.299+colorAux.getGreen()*0.587+colorAux.getBlue()*0.114);
+                //Sumamos uno a ese valor de gris en el array para el histograma
+                histogramArray[gris]++;
                 //Cambiamos a formato sRGB
                 //Asignamos el nuevo valor al BufferedImage
                 
@@ -109,6 +116,10 @@ public class Imagen {
 
 	public int[] getPos() {
 		return pos;
+	}
+	
+	public double[] getHistogramArray() {
+		return histogramArray;
 	}
 
 	public void setPos(int[] pos) {

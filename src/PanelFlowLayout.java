@@ -24,13 +24,12 @@ import java.awt.event.*;
 
 import javax.swing.JComponent;
 
-import com.sun.javafx.geom.Rectangle;
 
 public class PanelFlowLayout extends JFrame implements MouseListener {
 
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, item2, item3, gris, ROI;
+    private JMenuItem abrir, item2, gris, ROI, histogram;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -76,9 +75,9 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   menu.add(ROI);
     		   ROI.addActionListener(this);
 
-    		   item3= new JMenuItem("Pegar");
-    		   menu.add(item3);
-    
+    		   histogram= new JMenuItem("Histograma");
+    		   menu.add(histogram);
+    		   histogram.addActionListener(this);
     	   }
 
 		@Override
@@ -99,6 +98,9 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				panel.setVisible(true);
 				panel.add(fi);
 				fi.actualize();
+			}
+			else if(e.getSource() == histogram){
+				Histograma(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramArray();
 			}
 		}
        }
@@ -135,8 +137,6 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	static BufferedImage subImage(BufferedImage bi, int x, int y, int w, int h) {
