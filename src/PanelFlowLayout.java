@@ -1,7 +1,9 @@
 import Imagen.*;
 
 import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Shape;
@@ -14,6 +16,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -28,29 +31,22 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private JMenuBar barra1;
     private JMenu menu;
     private JMenuItem abrir, item2, item3, gris;
-    private Imagen img = new Imagen();
-    private JLabel jLabel1, jLabel2;
-    private JFrame frame = new JFrame("img");
-    private JFrame frame2 = new JFrame("img");
-    private Graphics2D graph;
-    private Boolean roi = false;
-    private Rectangle2D.Double rect; 
-    private BufferedImage aux = null;
+    private JDesktopPane panel;
+    private JFrame frame = new JFrame();
     
 
     public PanelFlowLayout(){
        setLayout(new FlowLayout());
        barra1= new JMenuBar();
        setJMenuBar(barra1);
-       jLabel1 = new JLabel();
-       jLabel2 = new JLabel();
-       jLabel1.addMouseListener(this);
+       panel = new JDesktopPane();
+       panel.addMouseListener(this);
        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	   frame.add(jLabel1);
-	   frame2.add(jLabel2);
+	   panel.setVisible(true);
+	   panel.setOpaque(true);
 	   frame.setResizable(false);
 	   frame.setAlwaysOnTop (true);
-	   
+	   setContentPane(panel);
        
        this.setExtendedState(MAXIMIZED_BOTH);
        this.setTitle("Pikaphoto");
@@ -90,13 +86,22 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == abrir){
-				jLabel1.setIcon(new ImageIcon(img.abrirImagen()));
-            
-				frame.pack();
-				frame.setVisible(true);
+				Imagen im = new Imagen();
+				im.abrirImagen();
+				FrameInterno fi = new FrameInterno(im);
+				fi.setVisible(true);
+				fi.pack();
+				fi.moveToFront();
+				fi.setClosable(true);
+				fi.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+				fi.addMouseListener(fi);
+				panel.setVisible(true);
+				panel.add(fi);
+				System.out.println(panel.getAllFrames().length);
 			}
 			else if(e.getSource() == gris){
-				jLabel1.setIcon(new ImageIcon(img.escalaGrises()));
+				((FrameInterno)(panel.getSelectedFrame())).getImg().escalaGrises();
+				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
 		}
        }
@@ -113,34 +118,18 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		for(int i = 0; i < panel.getAllFrames().length; i++)
+			((FrameInterno)(panel.getAllFrames()[i])).actualize();
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if(roi == true){
-			img.setImageActual(aux);
-			//graph.clearRect((int)img.getROI()[0],(int)img.getROI()[1],(int)(img.getROI()[2]-img.getROI()[0]),(int)(img.getROI()[3]-img.getROI()[1])); 
-		}
-		aux = deepCopy(img.getImageActual());
-		e.getLocationOnScreen().getX();
-		roi = false;
-		img.getROI()[0] = e.getPoint().getX();
-		img.getROI()[1] = e.getPoint().getY();
+		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		img.getROI()[2] = e.getPoint().getX();
-		img.getROI()[3] = e.getPoint().getY();
-		graph = img.getImageActual().createGraphics();
-		rect = new Rectangle2D.Double((int)img.getROI()[0],(int)img.getROI()[1],(int)(img.getROI()[2]-img.getROI()[0]),(int)(img.getROI()[3]-img.getROI()[1])); 
-		graph.draw(rect);
-        roi = true;
-        jLabel1.setIcon(new ImageIcon(img.getImageActual()));
-
-        //ImageIO.write(img, "jpg", new File("images/template.jpg"));
+		
 	}
 
 	@Override
@@ -153,11 +142,13 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 		
 	}
 	
-	static BufferedImage deepCopy(BufferedImage bi) {
-		 ColorModel cm = bi.getColorModel();
-		 boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-		 WritableRaster raster = bi.copyData(null);
-		 return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+	static BufferedImage subImage(BufferedImage bi, int x, int y, int w, int h) {
+		BufferedImage biCut = bi.getSubimage( x, y,w, h);
+		BufferedImage newbiCut =  new BufferedImage(w,h, BufferedImage.TYPE_INT_RGB );
+		Graphics g = newbiCut.getGraphics();
+		g.drawImage(biCut, 0, 0, null);
+
+		return newbiCut;
 	}
 
 }
