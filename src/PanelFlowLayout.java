@@ -101,23 +101,28 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				fi.actualize();
 			}
 			else if(e.getSource() == histogram){
+				//Creamos el objeto histograma
 				Histograma myHistogram = null;
 				try {
+					//Lo construimos pasandole el histogramArray de la imagen actual
 					myHistogram = new Histograma(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramArray());
 				} catch (IOException e2) {
 				}
+				//Creamos el fichero JPG de la gráfica
 				File histograma = myHistogram.saveChartToJPG(myHistogram.chart, 320, 240);
 				BufferedImage bmp = null;
 				try {
 					bmp = ImageIO.read(histograma);
 				} catch (IOException e1) {
 				}
+				//Se crea un objeto imagen de la gráfica y se añade a un FrameInterno
 				Imagen chart = new Imagen(bmp);
 				FrameInterno fi = new FrameInterno(chart);
 				panel.setVisible(true);
 				panel.add(fi);
 				fi.actualize();
 				
+				//Deja de mostrar las varialbes X e Y como si fuera una imagen
 				fi.lab2.show(false);
 			}
 		}

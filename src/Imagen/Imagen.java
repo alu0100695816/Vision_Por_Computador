@@ -86,7 +86,7 @@ public class Imagen {
                 //Calculamos la media de los tres canales (rojo, verde, azul)
                 gris=(int)(colorAux.getRed()*0.299+colorAux.getGreen()*0.587+colorAux.getBlue()*0.114);
                 //Sumamos uno a ese valor de gris en el array para el histograma
-                histogramArray[gris]++;
+                histogramArray[gris] += 1;
                 //Cambiamos a formato sRGB
                 //Asignamos el nuevo valor al BufferedImage
                 

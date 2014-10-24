@@ -21,34 +21,34 @@ public class Histograma {
 	
 	//Set de valores con los que se creará el histograma
 	HistogramDataset dataset = new HistogramDataset();
+	//Título de la gráfica y de los ejes X e Y
 	String plotTitle = "Histograma"; 
-    String xaxis = "number";
-    String yaxis = "value"; 
+    String xaxis = "Tonos Gris";
+    String yaxis = "Pixeles";
+    //Orientación de la gráfica
     PlotOrientation orientation = PlotOrientation.VERTICAL;
+    //Booleanos random
     boolean show = false; 
     boolean toolTips = false;
     boolean urls = false; 
+    //Objeto que almacenará la gráfica
     public JFreeChart chart;
     
+    //Constructor
 	public Histograma(double[] histogramArray) throws IOException {
-		dataset.setType(HistogramType.RELATIVE_FREQUENCY);
-		dataset.addSeries("Histograma",histogramArray,histogramArray.length);
-		chart = createChart(dataset, plotTitle, xaxis, yaxis, orientation, show, toolTips, urls);
+		//Tipo del histograma e introducción del array a dicho histograma
+		dataset.setType(HistogramType.FREQUENCY);
+		dataset.addSeries("Histograma",histogramArray,256);
+		//Llamada a la función que creará la gráfica
+		chart = ChartFactory.createHistogram( plotTitle, xaxis, yaxis, dataset, orientation, show, toolTips, urls);
 	}
 	
-	private JFreeChart createChart(HistogramDataset dataset, String plotTitle, String xaxis, String yaxis, PlotOrientation orientation, boolean show, boolean toolTips, boolean urls ) {
-        
-		JFreeChart chart = ChartFactory.createHistogram( plotTitle, xaxis, yaxis,
-                dataset, orientation, show, toolTips, urls);
-
-        return chart;
-        
-    }
-	
 	public File saveChartToJPG(final JFreeChart chart, final int width, final int height) {
-        String result = null;
+        //Strings que almacenarán el nombre y la dirección completa de la imagen
+		String result = null;
         String fileName = null;
         
+        //Se le asigna un nombre
         if (chart != null) {
         	final String chartTitle = chart.getTitle().getText();
             if (chartTitle != null) {
@@ -58,13 +58,15 @@ public class Histograma {
             }
         }
 		result = fileName+".jpg";
+		
         try {
+        	//Se llama a la función para pasar a imagen JPG, no devuelve nada, solo crea el fichero
 			ChartUtilities.saveChartAsJPEG(new File(result), chart, width, height);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         
+        //Devolvemos el fichero
         return new File(result);
 	}
 }
