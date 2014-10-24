@@ -14,6 +14,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -100,9 +101,24 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				fi.actualize();
 			}
 			else if(e.getSource() == histogram){
-				Histograma myHistogram = new Histograma(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramArray());
-				myHistogram.pack();
-		        myHistogram.setVisible(true);
+				Histograma myHistogram = null;
+				try {
+					myHistogram = new Histograma(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramArray());
+				} catch (IOException e2) {
+				}
+				File histograma = myHistogram.saveChartToJPG(myHistogram.chart, 320, 240);
+				BufferedImage bmp = null;
+				try {
+					bmp = ImageIO.read(histograma);
+				} catch (IOException e1) {
+				}
+				Imagen chart = new Imagen(bmp);
+				FrameInterno fi = new FrameInterno(chart);
+				panel.setVisible(true);
+				panel.add(fi);
+				fi.actualize();
+				
+				fi.lab2.show(false);
 			}
 		}
        }

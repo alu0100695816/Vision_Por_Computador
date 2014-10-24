@@ -30,7 +30,7 @@ import Imagen.Imagen;
 public class FrameInterno extends JInternalFrame implements MouseListener, MouseMotionListener, InternalFrameListener {
 	private Imagen img;
 	private JLabel lab = new JLabel();
-	private JLabel lab2 = new JLabel("x:   y:   ");
+	public JLabel lab2 = new JLabel("x:   y:   ");
 	private Graphics2D graph;
 	private Rectangle2D rect; 
 	private int desvX = 6;
