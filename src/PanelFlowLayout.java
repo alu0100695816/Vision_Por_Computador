@@ -71,7 +71,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   menu.add(gris);
     		   gris.addActionListener(this);
    
-    		   ROI= new JMenuItem("Separar RegiÃ³n de interÃ©s");
+    		   ROI= new JMenuItem("Separar Región de interés");
     		   menu.add(ROI);
     		   ROI.addActionListener(this);
 
@@ -100,7 +100,9 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				fi.actualize();
 			}
 			else if(e.getSource() == histogram){
-				Histograma(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramArray();
+				Histograma myHistogram = new Histograma(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramArray());
+				myHistogram.pack();
+		        myHistogram.setVisible(true);
 			}
 		}
        }
