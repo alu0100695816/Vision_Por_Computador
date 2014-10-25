@@ -19,7 +19,7 @@ public class Histograma {
 	//Set de valores con los que se crear� el histograma
 	private HistogramDataset dataset = new HistogramDataset();
 	//T�tulo de la gr�fica y de los ejes X e Y
-	private String plotTitle = "Histograma"; 
+	private String plotTitle; 
     private String xaxis = "Tonos Gris";
     private String yaxis = "Pixeles";
     //Orientaci�n de la gr�fica
@@ -32,7 +32,7 @@ public class Histograma {
     private JFreeChart chart;
     
     //Constructor
-	public Histograma(int[] arrayGrises, int min, int max) throws IOException {
+	public Histograma(String title, int[] arrayGrises, int min, int max) throws IOException {
 		//Tipo del histograma e introducci�n del array a dicho histograma
 		dataset.setType(HistogramType.FREQUENCY);
 		double[] arrayGrisesD = new double[arrayGrises.length];
@@ -41,6 +41,7 @@ public class Histograma {
 		}
 		dataset.addSeries("Histograma",arrayGrisesD,256,0,arrayGrisesD.length);
 		//Llamada a la funci�n que crear� la gr�fica
+		plotTitle = title;
 		setChart(ChartFactory.createHistogram( plotTitle, xaxis, yaxis, dataset, orientation, show, toolTips, urls));
 	}
 	

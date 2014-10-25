@@ -19,7 +19,9 @@ public class Imagen {
 	 */
 	private String formato; // Formato de la imagen //(?)String?
 	private Histograma histograma; // Histograma
+	private Histograma histogramaAc;
 	private BufferedImage histogramaImg = null;
+	private BufferedImage histogramaAcImg = null;
 	private int[] tam = new int[2]; // tam[0]=columnas, tam[1]=filas
 	private int[] minmax = new int[]{99999,0}; // Rango de valores de grises. minmax[0]=valor minimo, minmax[1]=valor maximo
 	private int brillo; // int?
@@ -29,6 +31,7 @@ public class Imagen {
 	private int[] nivelGris;
 	private int[] ROI = new int[]{0,0,0,0}; //iniciox,inicioy,finx,finy
 	private int[] arrayGrises = new int[256]; //Array que almacena el numero de pixeles que existen de cada tono de gris.
+	private int[] arrayGrisesAcumulativo = new int[256];
 	
 	private BufferedImage imageActual;
     
@@ -108,8 +111,16 @@ public class Imagen {
                 getImageActual().setRGB(i, j, valor.getRGB());
             }
         }
+        fillArrayGrisesAcumulativo();
         //Retornamos la imagen
         return getImageActual();
+    }
+    
+    public void fillArrayGrisesAcumulativo() {
+    	arrayGrisesAcumulativo = arrayGrises;
+    	for(int i = 1; i < arrayGrisesAcumulativo.length; i++) {
+    		arrayGrisesAcumulativo[i] += arrayGrisesAcumulativo[i-1];
+    	}
     }
 
 	public BufferedImage getImageActual() {
@@ -135,6 +146,9 @@ public class Imagen {
 	public int[] getArrayGrises() {
 		return arrayGrises;
 	}
+	public int[] getArrayGrisesAcumulativo() {
+		return arrayGrisesAcumulativo;
+	}
 
 	public void setPos(int[] pos) {
 		this.pos = pos;
@@ -155,18 +169,34 @@ public class Imagen {
 	
 	public void generarHistograma() throws IOException{
 		//Lo construimos pasandole el arrayGrises de la imagen actual
-		this.histograma = new Histograma(getArrayGrises(), 0,genNumPixels());
+		this.histograma = new Histograma("Histograma", getArrayGrises(), 0,genNumPixels());
 		//Creamos el fichero JPG de la gr�fica
 		File histogr = this.histograma.saveChartToJPG(this.histograma.getChart(), 320, 240);
 		this.setHistogramaImg(ImageIO.read(histogr));
+	}
+	
+	public void generarHistogramaAc() throws IOException{
+		//Lo construimos pasandole el arrayGrises de la imagen actual
+		this.histogramaAc = new Histograma("Histograma Acumulativo", getArrayGrisesAcumulativo(), 0,genNumPixels());
+		//Creamos el fichero JPG de la gr�fica
+		File histogr = this.histogramaAc.saveChartToJPG(this.histogramaAc.getChart(), 320, 240);
+		this.setHistogramaAcImg(ImageIO.read(histogr));
 	}
 
 	public BufferedImage getHistogramaImg() {
 		return histogramaImg;
 	}
+	
+	public BufferedImage getHistogramaAcImg() {
+		return histogramaAcImg;
+	}
 
 	public void setHistogramaImg(BufferedImage histogramaImg) {
 		this.histogramaImg = histogramaImg;
+	}
+	
+	public void setHistogramaAcImg(BufferedImage histogramaImg) {
+		this.histogramaAcImg = histogramaImg;
 	}
 
 }

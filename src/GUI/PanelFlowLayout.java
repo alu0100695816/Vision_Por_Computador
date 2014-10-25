@@ -21,7 +21,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, item2, gris, ROI, histogram;
+    private JMenuItem abrir, item2, gris, ROI, histogram, histogramAc;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -66,10 +66,15 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   ROI= new JMenuItem("Separar Regi�n de inter�s");
     		   menu.add(ROI);
     		   ROI.addActionListener(this);
+    		   menu.addSeparator();
 
     		   histogram= new JMenuItem("Histograma");
     		   menu.add(histogram);
     		   histogram.addActionListener(this);
+    		   
+    		   histogramAc= new JMenuItem("Histograma Acumulativo");
+    		   menu.add(histogramAc);
+    		   histogramAc.addActionListener(this);
     	   }
 
 		@SuppressWarnings("deprecation")
@@ -102,6 +107,19 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				}
 				//Se crea un objeto imagen de la gr�fica y se a�ade a un FrameInterno
 				FrameInterno fi = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaImg());
+				panel.setVisible(true);
+				panel.add(fi);
+			}
+			else if(e.getSource() == histogramAc) {
+				//Generamos el histograma
+				try {
+					((FrameInterno)(panel.getSelectedFrame())).getImg().generarHistogramaAc();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				//Se crea un objeto imagen de la gr�fica y se a�ade a un FrameInterno
+				FrameInterno fi = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaAcImg());
 				panel.setVisible(true);
 				panel.add(fi);
 			}
