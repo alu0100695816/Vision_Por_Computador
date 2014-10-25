@@ -18,7 +18,7 @@ public class Imagen {
 	private String formato; // Formato de la imagen //(?)String?
 	private Histograma histograma; // Histograma
 	private int[] tam = new int[2]; // tam[0]=columnas, tam[1]=filas
-	private int[] minmax = new int[2]; // Rango de valores de grises. minmax[0]=valor minimo, minmax[1]=valor maximo
+	private int[] minmax = new int[]{99999,0}; // Rango de valores de grises. minmax[0]=valor minimo, minmax[1]=valor maximo
 	private int brillo; // int?
 	private int contraste; // int?
 	private double entropia; // double?
@@ -64,7 +64,6 @@ public class Imagen {
                 File imagenSeleccionada=selector.getSelectedFile();
                 String[] aux = imagenSeleccionada.getName().split("[.]");
                 this.formato = aux[aux.length-1];
-                System.out.print(formato);
                 //Asignamos a la variable bmp la imagen leida
                 bmp = ImageIO.read(imagenSeleccionada);
             } catch (Exception e) {
@@ -97,6 +96,8 @@ public class Imagen {
                 //Sumamos uno a ese valor de gris en el array para el histograma
                 arrayGrises[gris] += 1;
                 nivelGris[j*getImageActual().getWidth()+i] = gris;
+                if(gris < minmax[0]) minmax[0] = gris;
+                if(gris > minmax[1]) minmax[1] = gris;
                 //Cambiamos a formato sRGB
                 //Asignamos el nuevo valor al BufferedImage
                 
@@ -145,7 +146,7 @@ public class Imagen {
 	}
 
 	public int getGris(int i, int j) {
-		if(j>=0 && i >=0)return nivelGris[j*tam[0]+i];
+		if((j>=0 && i >=0) && (j<=tam[1] && i <=tam[0]))return nivelGris[j*tam[0]+i];
 		else return 0;
 	}
 
