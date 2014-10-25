@@ -3,12 +3,9 @@ package Imagen;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JInternalFrame;
-
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;

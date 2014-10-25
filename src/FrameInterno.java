@@ -1,7 +1,5 @@
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -20,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
@@ -28,6 +25,10 @@ import Imagen.Imagen;
 
 
 public class FrameInterno extends JInternalFrame implements MouseListener, MouseMotionListener, InternalFrameListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Imagen img;
 	private JLabel lab = new JLabel();
 	private JLabel lab2 = new JLabel("x:   y:   gris:   ");

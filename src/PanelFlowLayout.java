@@ -1,33 +1,23 @@
 import Imagen.*;
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.MouseInfo;
-import java.awt.Shape;
-
 import javax.swing.*;
 
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
 
 import java.awt.event.*;
 
-import javax.swing.JComponent;
-
 
 public class PanelFlowLayout extends JFrame implements MouseListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
     private JMenuItem abrir, item2, gris, ROI, histogram;
@@ -81,6 +71,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   histogram.addActionListener(this);
     	   }
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == abrir){
@@ -128,7 +119,8 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 		}
        }
 
-       MenuDemo menu = new MenuDemo();
+       @SuppressWarnings("unused")
+	MenuDemo menu = new MenuDemo();
  
     }
 	
