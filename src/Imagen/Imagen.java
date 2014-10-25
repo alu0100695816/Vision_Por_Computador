@@ -1,12 +1,16 @@
 package Imagen;
 
+
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import GUI.FrameInterno;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 public class Imagen {
 
@@ -15,6 +19,7 @@ public class Imagen {
 	 */
 	private String formato; // Formato de la imagen //(?)String?
 	private Histograma histograma; // Histograma
+	private BufferedImage histogramaImg = null;
 	private int[] tam = new int[2]; // tam[0]=columnas, tam[1]=filas
 	private int[] minmax = new int[]{99999,0}; // Rango de valores de grises. minmax[0]=valor minimo, minmax[1]=valor maximo
 	private int brillo; // int?
@@ -146,6 +151,22 @@ public class Imagen {
 	public int getGris(int i, int j) {
 		if((j>=0 && i >=0) && (j<=tam[1] && i <=tam[0]))return nivelGris[j*tam[0]+i];
 		else return 0;
+	}
+	
+	public void generarHistograma() throws IOException{
+		//Lo construimos pasandole el arrayGrises de la imagen actual
+		this.histograma = new Histograma(getArrayGrises(), 0,genNumPixels());
+		//Creamos el fichero JPG de la gr�fica
+		File histogr = this.histograma.saveChartToJPG(this.histograma.getChart(), 320, 240);
+		this.setHistogramaImg(ImageIO.read(histogr));
+	}
+
+	public BufferedImage getHistogramaImg() {
+		return histogramaImg;
+	}
+
+	public void setHistogramaImg(BufferedImage histogramaImg) {
+		this.histogramaImg = histogramaImg;
 	}
 
 }
