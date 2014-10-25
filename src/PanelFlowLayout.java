@@ -72,7 +72,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   menu.add(gris);
     		   gris.addActionListener(this);
    
-    		   ROI= new JMenuItem("Separar Región de interés");
+    		   ROI= new JMenuItem("Separar Regiï¿½n de interï¿½s");
     		   menu.add(ROI);
     		   ROI.addActionListener(this);
 
@@ -105,17 +105,17 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				Histograma myHistogram = null;
 				try {
 					//Lo construimos pasandole el histogramArray de la imagen actual
-					myHistogram = new Histograma(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramArray());
+					myHistogram = new Histograma(((FrameInterno)(panel.getSelectedFrame())).getImg().getArrayGrises(), 0, ((FrameInterno)(panel.getSelectedFrame())).getImg().genNumPixels());
 				} catch (IOException e2) {
 				}
-				//Creamos el fichero JPG de la gráfica
-				File histograma = myHistogram.saveChartToJPG(myHistogram.chart, 320, 240);
+				//Creamos el fichero JPG de la grï¿½fica
+				File histograma = myHistogram.saveChartToJPG(myHistogram.getChart(), 320, 240);
 				BufferedImage bmp = null;
 				try {
 					bmp = ImageIO.read(histograma);
 				} catch (IOException e1) {
 				}
-				//Se crea un objeto imagen de la gráfica y se añade a un FrameInterno
+				//Se crea un objeto imagen de la grï¿½fica y se aï¿½ade a un FrameInterno
 				Imagen chart = new Imagen(bmp);
 				FrameInterno fi = new FrameInterno(chart);
 				panel.setVisible(true);
@@ -123,7 +123,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				fi.actualize();
 				
 				//Deja de mostrar las varialbes X e Y como si fuera una imagen
-				fi.lab2.show(false);
+				fi.getLab2().show(false);
 			}
 		}
        }

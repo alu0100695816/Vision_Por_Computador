@@ -19,32 +19,36 @@ public class Histograma {
 	 * @param args
 	 */
 	
-	//Set de valores con los que se creará el histograma
-	HistogramDataset dataset = new HistogramDataset();
-	//Título de la gráfica y de los ejes X e Y
-	String plotTitle = "Histograma"; 
-    String xaxis = "Tonos Gris";
-    String yaxis = "Pixeles";
-    //Orientación de la gráfica
-    PlotOrientation orientation = PlotOrientation.VERTICAL;
+	//Set de valores con los que se crearï¿½ el histograma
+	private HistogramDataset dataset = new HistogramDataset();
+	//Tï¿½tulo de la grï¿½fica y de los ejes X e Y
+	private String plotTitle = "Histograma"; 
+    private String xaxis = "Tonos Gris";
+    private String yaxis = "Pixeles";
+    //Orientaciï¿½n de la grï¿½fica
+    private PlotOrientation orientation = PlotOrientation.VERTICAL;
     //Booleanos random
     boolean show = false; 
     boolean toolTips = false;
     boolean urls = false; 
-    //Objeto que almacenará la gráfica
-    public JFreeChart chart;
+    //Objeto que almacenarï¿½ la grï¿½fica
+    private JFreeChart chart;
     
     //Constructor
-	public Histograma(double[] histogramArray) throws IOException {
-		//Tipo del histograma e introducción del array a dicho histograma
+	public Histograma(int[] arrayGrises, int min, int max) throws IOException {
+		//Tipo del histograma e introducciï¿½n del array a dicho histograma
 		dataset.setType(HistogramType.FREQUENCY);
-		dataset.addSeries("Histograma",histogramArray,256);
-		//Llamada a la función que creará la gráfica
-		chart = ChartFactory.createHistogram( plotTitle, xaxis, yaxis, dataset, orientation, show, toolTips, urls);
+		double[] arrayGrisesD = new double[arrayGrises.length];
+		for(int i = 0; i < arrayGrises.length; i++){
+			arrayGrisesD[i] = (double)arrayGrises[i];
+		}
+		dataset.addSeries("Histograma",arrayGrisesD,256,0,arrayGrisesD.length);
+		//Llamada a la funciï¿½n que crearï¿½ la grï¿½fica
+		setChart(ChartFactory.createHistogram( plotTitle, xaxis, yaxis, dataset, orientation, show, toolTips, urls));
 	}
 	
 	public File saveChartToJPG(final JFreeChart chart, final int width, final int height) {
-        //Strings que almacenarán el nombre y la dirección completa de la imagen
+        //Strings que almacenarï¿½n el nombre y la direcciï¿½n completa de la imagen
 		String result = null;
         String fileName = null;
         
@@ -60,7 +64,7 @@ public class Histograma {
 		result = fileName+".jpg";
 		
         try {
-        	//Se llama a la función para pasar a imagen JPG, no devuelve nada, solo crea el fichero
+        	//Se llama a la funciï¿½n para pasar a imagen JPG, no devuelve nada, solo crea el fichero
 			ChartUtilities.saveChartAsJPEG(new File(result), chart, width, height);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -68,5 +72,13 @@ public class Histograma {
         
         //Devolvemos el fichero
         return new File(result);
+	}
+
+	public JFreeChart getChart() {
+		return chart;
+	}
+
+	public void setChart(JFreeChart chart) {
+		this.chart = chart;
 	}
 }

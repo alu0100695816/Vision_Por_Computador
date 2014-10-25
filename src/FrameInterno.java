@@ -30,7 +30,7 @@ import Imagen.Imagen;
 public class FrameInterno extends JInternalFrame implements MouseListener, MouseMotionListener, InternalFrameListener {
 	private Imagen img;
 	private JLabel lab = new JLabel();
-	public JLabel lab2 = new JLabel("x:   y:   ");
+	private JLabel lab2 = new JLabel("x:   y:   gris:   ");
 	private Graphics2D graph;
 	private Rectangle2D rect; 
 	private int desvX = 6;
@@ -50,8 +50,8 @@ public class FrameInterno extends JInternalFrame implements MouseListener, Mouse
 		pan.add(statusPanel, BorderLayout.SOUTH);
 		statusPanel.setPreferredSize(new Dimension(pan.getWidth(), 20));
 		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
-		lab2.setHorizontalAlignment(SwingConstants.LEFT);
-		statusPanel.add(lab2);
+		getLab2().setHorizontalAlignment(SwingConstants.LEFT);
+		statusPanel.add(getLab2());
 		setContentPane(pan);
 		setVisible(true);
 		pan.setVisible(true);
@@ -117,12 +117,12 @@ public class FrameInterno extends JInternalFrame implements MouseListener, Mouse
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		getImg().actualizarPos((int) (e.getPoint().getX()-desvX),(int) (e.getPoint().getY()-desvY));
-		lab2.setText("x: " + this.getImg().getPos()[0] + " y: " + this.getImg().getPos()[1]);
+		getLab2().setText("x: " + this.getImg().getPos()[0] + " y: " + this.getImg().getPos()[1] + " gris: " + this.getImg().getGris(this.getImg().getPos()[0], this.getImg().getPos()[1]));
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		lab2.setText("x:  y:");
+		getLab2().setText("x:  y:");
 
 	}
 	
@@ -181,6 +181,14 @@ public class FrameInterno extends JInternalFrame implements MouseListener, Mouse
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public JLabel getLab2() {
+		return lab2;
+	}
+
+	public void setLab2(JLabel lab2) {
+		this.lab2 = lab2;
 	}
 	
 }
