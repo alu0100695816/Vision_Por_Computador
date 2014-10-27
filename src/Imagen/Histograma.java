@@ -3,8 +3,11 @@ package Imagen;
 import java.io.File;
 import java.io.IOException;
 
-import org.jfree.data.statistics.HistogramDataset;
-import org.jfree.data.statistics.HistogramType;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.Year;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -17,7 +20,8 @@ public class Histograma {
 	 */
 	
 	//Set de valores con los que se crearï¿½ el histograma
-	private HistogramDataset dataset = new HistogramDataset();
+	private XYSeries dataset = new XYSeries("Píxeles");
+	
 	//Tï¿½tulo de la grï¿½fica y de los ejes X e Y
 	private String plotTitle; 
     private String xaxis = "Tonos Gris";
@@ -33,16 +37,20 @@ public class Histograma {
     
     //Constructor
 	public Histograma(String title, int[] arrayGrises, int min, int max) throws IOException {
-		//Tipo del histograma e introducciï¿½n del array a dicho histograma
-		dataset.setType(HistogramType.FREQUENCY);
-		double[] arrayGrisesD = new double[arrayGrises.length];
-		for(int i = 0; i < arrayGrises.length; i++){
-			arrayGrisesD[i] = (double)arrayGrises[i];
-		}
-		dataset.addSeries("Histograma",arrayGrisesD,256,0,arrayGrisesD.length);
-		//Llamada a la funciï¿½n que crearï¿½ la grï¿½fica
+		//LLamamos a la función para rellenar el dataset
+		createDataset(arrayGrises);
+		//Metemos el dataset en un dataset collection que será pasado como parametro al crear el chart
+		XYSeriesCollection finalDataset = new XYSeriesCollection(dataset);
 		plotTitle = title;
-		setChart(ChartFactory.createHistogram( plotTitle, xaxis, yaxis, dataset, orientation, show, toolTips, urls));
+		//Creamos el chart
+		chart=ChartFactory.createXYBarChart(plotTitle,xaxis,false,yaxis,finalDataset,orientation,true,true,false);
+	}
+	
+	//Función para rellenar el dataset dependiendo del array
+	public void createDataset(int[] arrayGrises) {
+		for(int i = 0; i < arrayGrises.length; i++) {
+			dataset.add(i, arrayGrises[i]);
+		}
 	}
 	
 	public File saveChartToJPG(final JFreeChart chart, final int width, final int height) {

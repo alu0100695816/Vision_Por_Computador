@@ -117,7 +117,9 @@ public class Imagen {
     }
     
     public void fillArrayGrisesAcumulativo() {
-    	arrayGrisesAcumulativo = arrayGrises;
+    	for(int i = 0; i < arrayGrisesAcumulativo.length; i++) {
+    		arrayGrisesAcumulativo[i] = arrayGrises[i];
+    	}
     	for(int i = 1; i < arrayGrisesAcumulativo.length; i++) {
     		arrayGrisesAcumulativo[i] += arrayGrisesAcumulativo[i-1];
     	}
