@@ -129,47 +129,6 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				panel.setVisible(true);
 				panel.add(fi);
 			}
-			else if(e.getSource() == bc) {
-				JFrame frame = new JFrame("Brillo y Contraste");
-				JPanel pan = new JPanel();
-				final JSlider brillo = new JSlider();
-				brillo.setValue((int) ((FrameInterno)(panel.getSelectedFrame())).getImg().getBrillo());
-				JLabel bri = new JLabel("Brillo: ");
-				final JLabel numBri = new JLabel(Double.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getBrillo()));
-				JLabel con = new JLabel("Contraste: ");
-				final JLabel numCon = new JLabel(Double.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getContraste()));
-				brillo.setMaximum(255);
-				final JSlider contraste = new JSlider();
-				contraste.setMaximum(127);
-				contraste.setValue((int) ((FrameInterno)(panel.getSelectedFrame())).getImg().getContraste());
-				
-				brillo.addChangeListener(new ChangeListener() {
-				      public void stateChanged(ChangeEvent e) {
-				    	  ((FrameInterno)(panel.getSelectedFrame())).getImg().setBrilloContraste(brillo.getValue(),contraste.getValue());
-				    	  numBri.setText(Double.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getBrillo()));
-				    	  ((FrameInterno)(panel.getSelectedFrame())).actualize();
-				      }
-				});
-				 
-				contraste.addChangeListener(new ChangeListener() {
-				      public void stateChanged(ChangeEvent e) {
-				    	  ((FrameInterno)(panel.getSelectedFrame())).getImg().setBrilloContraste(brillo.getValue(),contraste.getValue());
-						  numCon.setText(Double.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getContraste()));
-				    	  ((FrameInterno)(panel.getSelectedFrame())).actualize();
-				      }
-				});
-				
-				pan.add(bri);
-				pan.add(brillo);
-				pan.add(numBri);
-				pan.add(con);
-				pan.add(contraste);
-				pan.add(numCon);
-				frame.setContentPane(pan);
-				pan.setVisible(true);
-				frame.setVisible(true);
-				frame.pack();
-			}
 		}
        }
 

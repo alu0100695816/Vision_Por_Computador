@@ -11,7 +11,6 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.Math;
 
 public class Imagen {
 
@@ -25,12 +24,9 @@ public class Imagen {
 	private BufferedImage histogramaAcImg = null;
 	private int[] tam = new int[2]; // tam[0]=columnas, tam[1]=filas
 	private int[] minmax = new int[]{99999,0}; // Rango de valores de grises. minmax[0]=valor minimo, minmax[1]=valor maximo
-	private double brillo;
-	private double contraste;
-	private double entropia;
-	private double media;
-	private double varianza;
-	private double desvTip;
+	private int brillo; // int?
+	private int contraste; // int?
+	private double entropia; // double?
 	private int[] pos = new int[2]; //pos[0]=x, pos[1]=y
 	private int[] nivelGris;
 	private int[] ROI = new int[]{0,0,0,0}; //iniciox,inicioy,finx,finy
@@ -116,51 +112,8 @@ public class Imagen {
             }
         }
         fillArrayGrisesAcumulativo();
-        initBrillo();
-        initContraste();
-        initEntropia();
         //Retornamos la imagen
         return getImageActual();
-    }
-
-    private void initEntropia() {
-    	double suma = 0;
-		for(int i = 0; i < 256; i++){
-			suma += (arrayGrises[i]/getNumPixels()) * (Math.log(arrayGrises[i]/getNumPixels())/Math.log(2));
-		}
-		this.entropia = -suma;
-	}
-
-	private void initBrillo() {
-    	double suma = 0;
-		for(int i = 0; i < 256; i++){
-			suma += arrayGrises[i] * i;
-		}
-		this.brillo = suma/getNumPixels();
-		this.brillo = Math.floor(this.brillo * 100) / 100;
-	}
-
-	private void initContraste() {
-		double suma = 0;
-		for(int i = 0; i < 256; i++){
-			suma += arrayGrises[i] * (i-this.brillo)*(i-this.brillo);
-		}
-		this.contraste = Math.sqrt(suma/getNumPixels());
-		this.contraste = Math.floor(this.contraste * 100) / 100;
-	}
-
-	public void actBrilloContraste() {
-		double A = contraste/desvTip;
-		double B = brillo - A*media;
-    	for (int x = 0; x < getImageActual().getWidth(); x++) {
-    		for (int y = 0; y < getImageActual().getHeight(); y++) {
-    			nivelGris[y*getImageActual().getWidth()+x] = (int) (A*nivelGris[y*getImageActual().getWidth()+x]+B);
-    			if(nivelGris[y*getImageActual().getWidth()+x] > 255) nivelGris[y*getImageActual().getWidth()+x] = 255; if(nivelGris[y*getImageActual().getWidth()+x] < 0) nivelGris[y*getImageActual().getWidth()+x] = 0;
-    			Color valor = new Color(getGris(x,y), getGris(x,y), getGris(x,y));
-                getImageActual().setRGB(x, y, valor.getRGB());
-    		}
-    	}
-    	
     }
     
     public void fillArrayGrisesAcumulativo() {
@@ -207,7 +160,7 @@ public class Imagen {
 		pos[0] = i; pos [1] = j;
 	}
 
-	public int getNumPixels() {
+	public int genNumPixels() {
 		return tam[0]*tam[1];
 	}
 
@@ -218,7 +171,7 @@ public class Imagen {
 	
 	public void generarHistograma() throws IOException{
 		//Lo construimos pasandole el arrayGrises de la imagen actual
-		this.histograma = new Histograma("Histograma", getArrayGrises(), 0,getNumPixels());
+		this.histograma = new Histograma("Histograma", getArrayGrises(), 0,genNumPixels());
 		//Creamos el fichero JPG de la gr�fica
 		File histogr = this.histograma.saveChartToJPG(this.histograma.getChart(), 320, 240);
 		this.setHistogramaImg(ImageIO.read(histogr));
@@ -226,7 +179,7 @@ public class Imagen {
 	
 	public void generarHistogramaAc() throws IOException{
 		//Lo construimos pasandole el arrayGrises de la imagen actual
-		this.histogramaAc = new Histograma("Histograma Acumulativo", getArrayGrisesAcumulativo(), 0,getNumPixels());
+		this.histogramaAc = new Histograma("Histograma Acumulativo", getArrayGrisesAcumulativo(), 0,genNumPixels());
 		//Creamos el fichero JPG de la gr�fica
 		File histogr = this.histogramaAc.saveChartToJPG(this.histogramaAc.getChart(), 320, 240);
 		this.setHistogramaAcImg(ImageIO.read(histogr));
@@ -247,33 +200,5 @@ public class Imagen {
 	public void setHistogramaAcImg(BufferedImage histogramaImg) {
 		this.histogramaAcImg = histogramaImg;
 	}
-
-	public double getBrillo() {
-		return brillo;
-	}
-
-	public double getContraste() {
-		return contraste;
-	}
-
-	public void setBrilloContraste(double brillo, double contraste) {
-		calcMedia();
-		calcVarianza();
-		this.brillo = brillo;
-		this.brillo = Math.floor(this.brillo * 100) / 100;
-		this.contraste = contraste;
-		this.contraste = Math.floor(this.contraste * 100) / 100;
-		actBrilloContraste();
-	}
-	
-	public void calcMedia(){
-		media = brillo;
-	}
-	
-	public void calcVarianza(){
-		varianza = contraste*contraste;
-		desvTip = contraste;
-	}
-
 
 }
