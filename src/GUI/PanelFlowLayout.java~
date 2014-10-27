@@ -23,7 +23,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, item2, gris, ROI, histogram, histogramAc, bc, eqAc, espHist;
+    private JMenuItem abrir, item2, gris, ROI, histogram, histogramAc, bc, eqAc;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -85,10 +85,6 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   bc= new JMenuItem("Brillo/Contraste");
     		   menu.add(bc);
     		   bc.addActionListener(this);
-
-		   espHist= new JMenuItem("Especificacion del histograma");
-    		   menu.add(espHist);
-    		   espHist.addActionListener(this);
     	   }
 
 		@SuppressWarnings("deprecation")
@@ -196,22 +192,6 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				pan.setVisible(true);
 				frame.setVisible(true);
 				frame.pack();
-			}
-			else if(e.getSource() == espHist) {
-				Imagen imAux = new Imagen();
-				try {
-					imAux.escalaGrises();
-					imAux.normalize();
-					imAux.generarHistogramaAcNorm();
-					((FrameInterno)(panel.getSelectedFrame())).getImg().especificacionHistograma(imAux);
-					FrameInterno fi = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaAcImg());
-					panel.setVisible(true);
-					panel.add(fi);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
 			}
 		}
        }

@@ -320,43 +320,4 @@ public class Imagen {
     	}
 		generarHistogramaAc();
 	}
-
-	public void especificacionHistograma(Imagen imAux) throws IOException {
-		normalize();
-		generarHistogramaAcNorm();
-		double value, aux;
-		double min = 999999.9;
-		double arrayGrisesNuevo[] = new double[arrayGrisesAcumulativoNorm.length];
-		for(int x = 0; x < arrayGrisesNuevo.length; x ++){
-			arrayGrisesNuevo[x] = 0;
-		}
-		int minIndex = 0;
-		for(int x = 0; x < arrayGrisesAcumulativoNorm.length; x ++){
-			value = arrayGrisesAcumulativoNorm[x];
-			min = 999999.9;
-			for(int i = 0; i < imAux.getArrayGrisesAcumulativoNorm().length; i++){
-				aux = imAux.getArrayGrisesAcumulativoNorm()[i];
-				if(value < aux) aux = aux - value;
-				else if(value >= aux) aux = value - aux;
-				if(aux < min){ 
-					min = aux;
-					minIndex = i;
-				}
-			}
-			arrayGrisesNuevo[x] = imAux.getArrayGrisesAcumulativoNorm()[minIndex];
-		}
-		
-		for(int x = 0; x < arrayGrisesAcumulativoNorm.length; x ++){
-			arrayGrisesAcumulativoNorm[x] = arrayGrisesNuevo[x];
-		}
-		generarHistogramaAcNorm();
-		
-	}
-
-	public void normalize(){
-		double sizeD = getImageActual().getHeight()*getImageActual().getWidth();
-		for (int x = 0; x < arrayGrisesAcumulativo.length; x++) {
-			arrayGrisesAcumulativoNorm[x] = arrayGrisesAcumulativo[x]/sizeD;
-		}
-	}
 }
