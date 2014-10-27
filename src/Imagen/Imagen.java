@@ -46,6 +46,7 @@ public class Imagen {
 		tam[0] = imageActual.getWidth();
 		tam[1] = imageActual.getHeight();
 		nivelGris = new int[tam[0]*tam[1]];
+		escalaGrises();
 	}
 	
 	public Imagen(BufferedImage img){
@@ -53,6 +54,7 @@ public class Imagen {
 		tam[0] = imageActual.getWidth();
 		tam[1] = imageActual.getHeight();
 		nivelGris = new int[tam[0]*tam[1]];
+		escalaGrises();
 	}
 	
     //Método que devuelve una imagen abierta desde archivo
@@ -163,7 +165,7 @@ public class Imagen {
     	}
     }
 	
-	public void fillBothArrays() {
+	/*public void fillBothArrays() {
 		//Llenamos el array para el histograma de ceros
     	for(int i = 0; i < 256; i++) {
     		arrayGrises[i] = 0;
@@ -180,7 +182,7 @@ public class Imagen {
             }
         }
         fillArrayGrisesAcumulativo();
-	}
+	}*/
     
     public void fillArrayGrisesAcumulativo() {
     	for(int i = 0; i < arrayGrisesAcumulativo.length; i++) {
@@ -236,7 +238,7 @@ public class Imagen {
 	}
 	
 	public void generarHistograma() throws IOException{
-		fillBothArrays();
+		//fillBothArrays();
 		//Lo construimos pasandole el arrayGrises de la imagen actual
 		this.histograma = new Histograma("Histograma", getArrayGrises(), 0,getNumPixels());
 		//Creamos el fichero JPG de la gr�fica
@@ -245,7 +247,7 @@ public class Imagen {
 	}
 	
 	public void generarHistogramaAc() throws IOException{
-		fillBothArrays();
+		//fillBothArrays();
 		//Lo construimos pasandole el arrayGrises de la imagen actual
 		this.histogramaAc = new Histograma("Histograma Acumulativo", getArrayGrisesAcumulativo(), 0,getNumPixels());
 		//Creamos el fichero JPG de la gr�fica
@@ -254,7 +256,7 @@ public class Imagen {
 	}
 
 	public void generarHistogramaAcNorm() throws IOException{
-		fillBothArrays();
+		//fillBothArrays();
 		//Lo construimos pasandole el arrayGrises de la imagen actual
 		this.histogramaAcNorm = new Histograma("Histograma Acumulativo", getArrayGrisesAcumulativoNorm(), 0,getNumPixels());
 		//Creamos el fichero JPG de la gr�fica
