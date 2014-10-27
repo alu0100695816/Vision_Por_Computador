@@ -87,6 +87,11 @@ public class Imagen {
     }
     
     public BufferedImage escalaGrises(){
+    	//Llenamos el array para el histograma de ceros
+    	for(int i = 0; i < 256; i++) {
+    		arrayGrises[i] = 0;
+    	}
+    	
     	//Variables que almacenarán los píxeles
         int gris;
         Color colorAux;
@@ -98,6 +103,7 @@ public class Imagen {
                 colorAux=new Color(this.getImageActual().getRGB(i, j));
                 //Calculamos la media de los tres canales (rojo, verde, azul)
                 gris=(int)(colorAux.getRed()*0.299+colorAux.getGreen()*0.587+colorAux.getBlue()*0.114);
+                arrayGrises[gris] += 1;
                 nivelGris[j*getImageActual().getWidth()+i] = gris;
                 if(gris < minmax[0]) minmax[0] = gris;
                 if(gris > minmax[1]) minmax[1] = gris;
@@ -108,6 +114,7 @@ public class Imagen {
                 getImageActual().setRGB(i, j, valor.getRGB());
             }
         }
+        fillArrayGrisesAcumulativo();
         initBrillo();
         initContraste();
         initEntropia();
@@ -152,7 +159,6 @@ public class Imagen {
                 getImageActual().setRGB(x, y, valor.getRGB());
     		}
     	}
-    	
     }
 	
 	public void fillBothArrays() {
@@ -297,8 +303,5 @@ public class Imagen {
     			arrayGrisesAcumulativo[x] = val;
     	}
 		generarHistogramaAc();
-		
 	}
-
-
 }
