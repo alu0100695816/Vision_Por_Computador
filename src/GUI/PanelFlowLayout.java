@@ -23,7 +23,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, item2, gris, ROI, histogram, histogramAc, bc;
+    private JMenuItem abrir, item2, gris, ROI, histogram, histogramAc, bc, eqAc;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -77,8 +77,12 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   histogramAc= new JMenuItem("Histograma Acumulativo");
     		   menu.add(histogramAc);
     		   histogramAc.addActionListener(this);
+    		   
+    		   eqAc= new JMenuItem("Ecualizar Histograma");
+    		   menu.add(eqAc);
+    		   eqAc.addActionListener(this);
 
-		   bc= new JMenuItem("Brillo/Contraste");
+    		   bc= new JMenuItem("Brillo/Contraste");
     		   menu.add(bc);
     		   bc.addActionListener(this);
     	   }
@@ -125,6 +129,25 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 					e1.printStackTrace();
 				}
 				//Se crea un objeto imagen de la gr�fica y se a�ade a un FrameInterno
+				FrameInterno fi = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaAcImg());
+				panel.setVisible(true);
+				panel.add(fi);
+			}
+			else if(e.getSource() == eqAc) {
+				//Generamos el histograma
+				try {
+					((FrameInterno)(panel.getSelectedFrame())).getImg().generarHistogramaAc();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				//Se crea un objeto imagen de la gr�fica y se a�ade a un FrameInterno
+				try {
+					((FrameInterno)(panel.getSelectedFrame())).getImg().ecualizarHistograma();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				FrameInterno fi = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaAcImg());
 				panel.setVisible(true);
 				panel.add(fi);

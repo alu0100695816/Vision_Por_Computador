@@ -274,6 +274,18 @@ public class Imagen {
 		varianza = contraste*contraste;
 		desvTip = contraste;
 	}
+	
+	public void ecualizarHistograma() throws IOException{
+		int size = getImageActual().getHeight()*getImageActual().getWidth();
+		int val;
+		for (int x = 0; x < arrayGrisesAcumulativo.length; x++) {
+    			val = (int) (Math.round((256.0/size)*arrayGrisesAcumulativo[x])-1);
+    			if(val < 0) val = 0;
+    			arrayGrisesAcumulativo[x] = val;
+    	}
+		generarHistogramaAc();
+		
+	}
 
 
 }
