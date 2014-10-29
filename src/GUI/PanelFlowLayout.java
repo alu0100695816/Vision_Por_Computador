@@ -152,9 +152,12 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				FrameInterno fi = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaAcImg());
+				FrameInterno fi1 = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaImg());
 				panel.setVisible(true);
-				panel.add(fi);
+				panel.add(fi1);
+				FrameInterno fi2 = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaAcImg());
+				panel.setVisible(true);
+				panel.add(fi2);
 			}
 			else if(e.getSource() == bc) {
 				JFrame frame = new JFrame("Brillo y Contraste");

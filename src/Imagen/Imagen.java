@@ -313,13 +313,27 @@ public class Imagen {
 	}
 	
 	public void ecualizarHistograma() throws IOException{
+		int Vin;
+        Color colorAux;
+        int[] arrayAux = new int[256];
 		int size = getImageActual().getHeight()*getImageActual().getWidth();
-		int val;
-		for (int x = 0; x < arrayGrisesAcumulativo.length; x++) {
-    			val = (int) (Math.round((256.0/size)*arrayGrisesAcumulativo[x])-1);
-    			if(val < 0) val = 0;
-    			arrayGrisesAcumulativo[x] = val;
+		for( int i = 0; i < arrayAux.length; i++ ){
+            Vin = i;
+            int Vout = (int)(Math.round((256.0/size)*arrayGrisesAcumulativo[Vin])-1);
+            if(Vout < 0) Vout = 0;
+            arrayAux[Vin] = Vout;
+		}
+		for( int i = 0; i < getImageActual().getWidth(); i++ ){
+            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+            	colorAux=new Color(this.getImageActual().getRGB(i, j));
+            	Vin=(int)(colorAux.getRed());
+            	int Vout = arrayAux[Vin];
+            	Color valor = new Color(Vout, Vout, Vout);
+            	getImageActual().setRGB(i, j, valor.getRGB());
+            }
     	}
+		escalaGrises();
+		generarHistograma();
 		generarHistogramaAc();
 	}
 
@@ -348,7 +362,7 @@ public class Imagen {
 			arrayGrisesNuevo[x] = imAux.getArrayGrisesAcumulativoNorm()[minIndex];
 		}
 		
-		for(int x = 0; x < arrayGrisesAcumulativoNorm.length; x ++){
+		for(int x = 0; x < arrayGrisesAcumulativoNorm.length; x++){
 			arrayGrisesAcumulativoNorm[x] = arrayGrisesNuevo[x];
 		}
 		generarHistogramaAcNorm();
