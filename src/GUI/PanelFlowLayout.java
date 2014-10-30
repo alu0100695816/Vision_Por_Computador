@@ -23,7 +23,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, item2, gris, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar;
+    private JMenuItem abrir, gris, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -87,9 +87,13 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   menu.add(bc);
     		   bc.addActionListener(this);
 
-		   espHist= new JMenuItem("Especificacion del histograma");
+    		   espHist= new JMenuItem("Especificacion del histograma");
     		   menu.add(espHist);
     		   espHist.addActionListener(this);
+    		   
+    		   gamma= new JMenuItem("Correccion gamma");
+    		   menu.add(gamma);
+    		   gamma.addActionListener(this);
     	   }
 
 		@SuppressWarnings("deprecation")
@@ -226,6 +230,11 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				panel.setVisible(true);
 				panel.add(fi);
 				
+			}
+			else if(e.getSource() == gamma) {
+				double gamma = Float.parseFloat(JOptionPane.showInputDialog("Seleccione el indice gamma"));
+				((FrameInterno)(panel.getSelectedFrame())).getImg().correccionGamma(gamma);	
+				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
 		}
        }

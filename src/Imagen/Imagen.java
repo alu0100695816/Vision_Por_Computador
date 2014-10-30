@@ -391,6 +391,13 @@ public class Imagen {
 			arrayGrisesAcumulativoNorm[x] = arrayGrisesAcumulativo[x]/sizeD;
 		}
 	}
+	
+	public void denormalize(){
+		double sizeD = getImageActual().getHeight()*getImageActual().getWidth();
+		for (int x = 0; x < arrayGrisesAcumulativo.length; x++) {
+			arrayGrisesAcumulativo[x] = (int) (arrayGrisesAcumulativoNorm[x]*sizeD);
+		}
+	}
 
 	public void guardar() {
 		JFileChooser selector=new JFileChooser();
@@ -423,4 +430,20 @@ public class Imagen {
 	        return "Directorios solo";
 	      }
 	    }
+	public void correccionGamma(double gamma) {
+		Color colorAux;
+		int Vin, Vout; 
+		double a, b;
+		for( int i = 0; i < getImageActual().getWidth(); i++ ){
+            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+            	colorAux=new Color(this.getImageActual().getRGB(i, j));
+            	Vin=colorAux.getRed();
+            	a = Vin/255.;
+            	b = Math.pow(a, gamma);
+            	Vout = (int) (b * 255);
+            	Color valor = new Color(Vout, Vout, Vout);
+            	getImageActual().setRGB(i, j, valor.getRGB());
+             }
+    	 }
+	}
 }
