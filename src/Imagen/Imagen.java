@@ -380,6 +380,7 @@ public class Imagen {
 		escalaGrises();
 		generarHistograma();
 		generarHistogramaAc();
+		normalize();
 		generarHistogramaAcNorm();
 		
 	}

@@ -148,6 +148,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				//Se crea un objeto imagen de la gr�fica y se a�ade a un FrameInterno
 				try {
 					((FrameInterno)(panel.getSelectedFrame())).getImg().ecualizarHistograma();
+					((FrameInterno)(panel.getSelectedFrame())).actualize();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -207,13 +208,14 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 					imAux.normalize();
 					imAux.generarHistogramaAcNorm();
 					((FrameInterno)(panel.getSelectedFrame())).getImg().especificacionHistograma(imAux);
-					FrameInterno fi = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaAcImg());
-					panel.setVisible(true);
-					panel.add(fi);
+					((FrameInterno)(panel.getSelectedFrame())).actualize();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				FrameInterno fi = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaAcImg());
+				panel.setVisible(true);
+				panel.add(fi);
 				
 			}
 		}
