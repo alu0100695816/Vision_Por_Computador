@@ -23,7 +23,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, item2, gris, ROI, histogram, histogramAc, bc, eqAc, espHist;
+    private JMenuItem abrir, item2, gris, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -55,8 +55,9 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   menu.add(abrir);
     		   abrir.addActionListener(this);
    
-    		   item2= new JMenuItem("Guardar Imagen");
-    		   menu.add(item2);
+    		   guardar= new JMenuItem("Guardar Imagen");
+    		   menu.add(guardar);
+    		   guardar.addActionListener(this);
        
     		   menu= new JMenu("Editar");
     		   barra1.add(menu);
@@ -99,6 +100,14 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				FrameInterno fi = new FrameInterno(im);
 				panel.setVisible(true);
 				panel.add(fi);
+			}
+			if(e.getSource() == guardar){
+				try{
+				((FrameInterno)(panel.getSelectedFrame())).getImg().guardar();
+				}catch(Exception e2){
+					JOptionPane.showMessageDialog(frame,
+	        			    "Error. Recuerda poner un nombre a tu imagen al final de la ruta");
+				}
 			}
 			else if(e.getSource() == gris){
 				((FrameInterno)(panel.getSelectedFrame())).getImg().escalaGrises();

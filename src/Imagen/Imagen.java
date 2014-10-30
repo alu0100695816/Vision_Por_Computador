@@ -391,4 +391,36 @@ public class Imagen {
 			arrayGrisesAcumulativoNorm[x] = arrayGrisesAcumulativo[x]/sizeD;
 		}
 	}
+
+	public void guardar() {
+		JFileChooser selector=new JFileChooser();
+        String Cdir = System.getProperty("user.dir");
+        File dir = new File(Cdir + File.separator + "img");
+        selector.setCurrentDirectory(dir);
+        selector.setDialogTitle("Directorio donde guardar la imagen");
+        selector.setFileFilter( new FolderFilter() );
+        selector.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int flag=selector.showSaveDialog(null);
+        if(flag==JFileChooser.APPROVE_OPTION){
+         
+        	try {
+        		File f = selector.getSelectedFile();
+        	    String test = f.getAbsolutePath();
+        	    ImageIO.write(getImageActual(), formato, selector.getSelectedFile());
+        	} catch (IOException e) {
+        		
+        	}
+        }
+	}
+	private static class FolderFilter extends javax.swing.filechooser.FileFilter {
+	      @Override
+	      public boolean accept( File file ) {
+	        return file.isDirectory();
+	      }
+
+	      @Override
+	      public String getDescription() {
+	        return "Directorios solo";
+	      }
+	    }
 }
