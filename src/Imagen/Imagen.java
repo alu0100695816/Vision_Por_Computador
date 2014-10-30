@@ -9,6 +9,8 @@ import GUI.FrameInterno;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.lang.Math;
@@ -351,7 +353,7 @@ public class Imagen {
 		}
 		int minIndex = 0;
 		int Vin, Vout;
-		Color colorAux;
+		Color colorAux, valor;
 		for(int x = 0; x < arrayGrisesAcumulativoNorm.length; x ++){
 			value = arrayGrisesAcumulativoNorm[x];
 			min = 999999.9;
@@ -371,7 +373,7 @@ public class Imagen {
 	            	Vin=colorAux.getRed();
 	            	if(Vin == x){
 	            		Vout = minIndex;
-	            		Color valor = new Color(Vout, Vout, Vout);
+	            		valor = new Color(Vout, Vout, Vout);
 	            		getImageActual().setRGB(i, j, valor.getRGB());
 	            	}
 	             }
@@ -431,7 +433,7 @@ public class Imagen {
 	      }
 	    }
 	public void correccionGamma(double gamma) {
-		Color colorAux;
+		Color colorAux, valor;
 		int Vin, Vout; 
 		double a, b;
 		for( int i = 0; i < getImageActual().getWidth(); i++ ){
@@ -441,9 +443,33 @@ public class Imagen {
             	a = Vin/255.;
             	b = Math.pow(a, gamma);
             	Vout = (int) (b * 255);
-            	Color valor = new Color(Vout, Vout, Vout);
+            	valor = new Color(Vout, Vout, Vout);
             	getImageActual().setRGB(i, j, valor.getRGB());
              }
     	 }
+	}
+
+	public BufferedImage diferencia(Imagen imAux) {
+		Color color1, color2, color3;
+		int gris1, gris2, gris3;
+		Imagen imgDif = new Imagen(deepCopy(this.getImageActual()));
+		for(int i = 0; i < getImageActual().getWidth(); i++){
+			for(int j = 0; j < getImageActual().getHeight(); j++){
+				color1=new Color(this.getImageActual().getRGB(i, j));
+				gris1=color1.getRed();
+				color2=new Color(imAux.getImageActual().getRGB(i, j));
+				gris2=color2.getRed();
+				gris3 = Math.abs(gris2-gris1);
+				color3 = new Color(gris3, gris3, gris3);
+				imgDif.getImageActual().setRGB(i, j, color3.getRGB());
+			}
+		}
+		return imgDif.getImageActual();
+	}
+	static BufferedImage deepCopy(BufferedImage bi) {
+		 ColorModel cm = bi.getColorModel();
+		 boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+		 WritableRaster raster = bi.copyData(null);
+		 return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
 	}
 }
