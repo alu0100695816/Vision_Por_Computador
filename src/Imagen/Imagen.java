@@ -64,6 +64,9 @@ public class Imagen {
         BufferedImage bmp=null;
         //Creamos un nuevo cuadro de diálogo para seleccionar imagen
         JFileChooser selector=new JFileChooser();
+        String Cdir = System.getProperty("user.dir");
+        File dir = new File(Cdir + File.separator + "img");
+        selector.setCurrentDirectory(dir);
         //Le damos un título
         selector.setDialogTitle("Seleccione una imagen");
         //Filtramos los tipos de archivos
@@ -347,6 +350,8 @@ public class Imagen {
 			arrayGrisesNuevo[x] = 0;
 		}
 		int minIndex = 0;
+		int Vin, Vout;
+		Color colorAux;
 		for(int x = 0; x < arrayGrisesAcumulativoNorm.length; x ++){
 			value = arrayGrisesAcumulativoNorm[x];
 			min = 999999.9;
@@ -359,12 +364,22 @@ public class Imagen {
 					minIndex = i;
 				}
 			}
-			arrayGrisesNuevo[x] = imAux.getArrayGrisesAcumulativoNorm()[minIndex];
+			//arrayGrisesNuevo[x] = imAux.getArrayGrisesAcumulativoNorm()[minIndex];
+			for( int i = 0; i < getImageActual().getWidth(); i++ ){
+	            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+	            	colorAux=new Color(this.getImageActual().getRGB(i, j));
+	            	Vin=colorAux.getRed();
+	            	if(Vin == x){
+	            		Vout = minIndex;
+	            		Color valor = new Color(Vout, Vout, Vout);
+	            		getImageActual().setRGB(i, j, valor.getRGB());
+	            	}
+	             }
+	    	 }
 		}
-		
-		for(int x = 0; x < arrayGrisesAcumulativoNorm.length; x++){
-			arrayGrisesAcumulativoNorm[x] = arrayGrisesNuevo[x];
-		}
+		escalaGrises();
+		generarHistograma();
+		generarHistogramaAc();
 		generarHistogramaAcNorm();
 		
 	}
