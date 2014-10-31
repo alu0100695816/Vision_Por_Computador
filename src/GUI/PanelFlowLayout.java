@@ -23,7 +23,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, gris, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif;
+    private JMenuItem abrir, gris, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -58,6 +58,11 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   guardar= new JMenuItem("Guardar Imagen");
     		   menu.add(guardar);
     		   guardar.addActionListener(this);
+    		   menu.addSeparator();
+    		   
+    		   cerrar= new JMenuItem("Salir");
+    		   menu.add(cerrar);
+    		   cerrar.addActionListener(this);
        
     		   menu= new JMenu("Editar");
     		   barra1.add(menu);
@@ -69,8 +74,18 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   ROI= new JMenuItem("Separar Region de interes");
     		   menu.add(ROI);
     		   ROI.addActionListener(this);
-    		   menu.addSeparator();
-
+    		   
+    		   bc= new JMenuItem("Brillo/Contraste");
+    		   menu.add(bc);
+    		   bc.addActionListener(this);
+    		   
+    		   gamma= new JMenuItem("Correccion gamma");
+    		   menu.add(gamma);
+    		   gamma.addActionListener(this);
+    		   
+    		   menu= new JMenu("Análisis");
+    		   barra1.add(menu);
+    		   
     		   histogram= new JMenuItem("Histograma");
     		   menu.add(histogram);
     		   histogram.addActionListener(this);
@@ -78,26 +93,20 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   histogramAc= new JMenuItem("Histograma Acumulativo");
     		   menu.add(histogramAc);
     		   histogramAc.addActionListener(this);
+    		   menu.addSeparator();
     		   
-    		   eqAc= new JMenuItem("Ecualizar Histograma");
-    		   menu.add(eqAc);
-    		   eqAc.addActionListener(this);
-
-    		   bc= new JMenuItem("Brillo/Contraste");
-    		   menu.add(bc);
-    		   bc.addActionListener(this);
-
     		   espHist= new JMenuItem("Especificacion del histograma");
     		   menu.add(espHist);
     		   espHist.addActionListener(this);
     		   
-    		   gamma= new JMenuItem("Correccion gamma");
-    		   menu.add(gamma);
-    		   gamma.addActionListener(this);
+    		   eqAc= new JMenuItem("Ecualizar Histograma");
+    		   menu.add(eqAc);
+    		   eqAc.addActionListener(this);
     		   
     		   dif= new JMenuItem("Diferencia entre dos imagenes");
     		   menu.add(dif);
     		   dif.addActionListener(this);
+
     	   }
 
 		@SuppressWarnings("deprecation")
@@ -248,6 +257,9 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				panel.setVisible(true);
 				panel.add(fi);
 				
+			}
+			else if(e.getSource() == cerrar) {
+				System.exit(0);
 			}
 		}
        }
