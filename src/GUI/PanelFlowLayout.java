@@ -3,6 +3,8 @@ import Imagen.*;
 
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridLayout;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -10,6 +12,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
 import javax.imageio.ImageIO;
 
 import java.awt.event.*;
@@ -23,7 +26,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, gris, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm;
+    private JMenuItem abrir, gris, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm, tramos;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -82,6 +85,10 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   gamma= new JMenuItem("Correccion gamma");
     		   menu.add(gamma);
     		   gamma.addActionListener(this);
+    		   
+    		   tramos= new JMenuItem("Trans. lineal por tramos");
+    		   menu.add(tramos);
+    		   tramos.addActionListener(this);
     		   
     		   menu= new JMenu("Anï¿½lisis");
     		   barra1.add(menu);
@@ -274,6 +281,61 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				panel.add(fi);
 				
 			}
+			else if(e.getSource() == tramos) {
+				int numTramos = (int)(Float.parseFloat(JOptionPane.showInputDialog("Indique el número de tramos(1-4):")));
+				while(numTramos < 1 || numTramos > 4) {
+					numTramos = (int)(Float.parseFloat(JOptionPane.showInputDialog("Error: solo entre 1 y 4 tramos. Introduzca de nuevo:")));
+				}
+				switch(numTramos){
+				case 1:
+					class Grid1Tramo extends JFrame implements ActionListener {
+						
+						private static final long serialVersionUID = 1L;
+						GridLayout inputs = new GridLayout(3,2);
+						JButton confirm = new JButton("Confirmar Coordenadas");
+						int[][] arrayCampos = new int[2][2];
+						
+						JTextField campo1 = new JTextField("0",5);
+				        JTextField campo2 = new JTextField("0",5);
+				        JTextField campo3 = new JTextField("255",5);
+				        JTextField campo4 = new JTextField("255",5);
+						
+						public Grid1Tramo(String name) {
+					        super(name);
+					        
+					        final JPanel pan = new JPanel();
+					        pan.setLayout(inputs);
+					        confirm.addActionListener(this);
+					        
+							pan.add(campo1);
+							pan.add(campo2);
+							pan.add(campo3);
+							pan.add(campo4);
+							pan.add(confirm);
+							
+							this.setContentPane(pan);
+							this.setLocationRelativeTo(null);
+							this.setVisible(true);
+							this.pack();
+					        this.setResizable(false);
+					    } //Constructor
+						
+						public void actionPerformed(ActionEvent e) {
+							if(e.getSource() == confirm) {
+								arrayCampos[0][0] = Integer.parseInt(campo1.getText());
+								arrayCampos[0][1] = Integer.parseInt(campo2.getText());
+								arrayCampos[1][0] = Integer.parseInt(campo3.getText());
+								arrayCampos[1][1] = Integer.parseInt(campo4.getText());
+								
+								//Pasar Array a función de la imagen actual que haga el resto
+							}
+						}
+					} //Class
+					
+					Grid1Tramo tipo1 = new Grid1Tramo("Introducir Coordenadas");
+					
+				} //Switch
+			} //elseif
 			else if(e.getSource() == cerrar) {
 				System.exit(0);
 			}
