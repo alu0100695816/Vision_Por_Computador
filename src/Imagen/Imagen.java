@@ -26,6 +26,7 @@ public class Imagen {
 	private Histograma histogramaAcNorm;
 	private BufferedImage histogramaImg = null;
 	private BufferedImage histogramaAcImg = null;
+	private BufferedImage histogramaAcNormImg = null;
 	private int[] tam = new int[2]; // tam[0]=columnas, tam[1]=filas
 	private int[] minmax = new int[]{99999,0}; // Rango de valores de grises. minmax[0]=valor minimo, minmax[1]=valor maximo
 	private double brillo;
@@ -59,7 +60,14 @@ public class Imagen {
 		escalaGrises();
 	}
 	
-    //Método que devuelve una imagen abierta desde archivo
+    public Imagen(BufferedImage img, int i) {
+    	setImageActual(img);
+		tam[0] = imageActual.getWidth();
+		tam[1] = imageActual.getHeight();
+		nivelGris = new int[tam[0]*tam[1]];
+	}
+
+	//Método que devuelve una imagen abierta desde archivo
     //Retorna un objeto BufferedImagen
     public BufferedImage abrirImagen(){
         //Creamos la variable que será devuelta (la creamos como null)
@@ -263,10 +271,12 @@ public class Imagen {
 	public void generarHistogramaAcNorm() throws IOException{
 		//fillBothArrays();
 		//Lo construimos pasandole el arrayGrises de la imagen actual
-		this.histogramaAcNorm = new Histograma("Histograma Acumulativo", getArrayGrisesAcumulativoNorm(), 0,getNumPixels());
+		generarHistogramaAc();
+		normalize();
+		this.histogramaAcNorm = new Histograma("Histograma Acumulativo Normalizado", getArrayGrisesAcumulativoNorm(), 0,getNumPixels());
 		//Creamos el fichero JPG de la gr�fica
 		File histogr = this.histogramaAcNorm.saveChartToJPG(this.histogramaAcNorm.getChart(), 320, 240);
-		this.setHistogramaAcImg(ImageIO.read(histogr));
+		this.setHistogramaAcNormImg(ImageIO.read(histogr));
 	}
 
 	private double[] getArrayGrisesAcumulativoNorm() {
@@ -343,14 +353,9 @@ public class Imagen {
 	}
 
 	public void especificacionHistograma(Imagen imAux) throws IOException {
-		normalize();
 		generarHistogramaAcNorm();
 		double value, aux;
 		double min = 999999.9;
-		double arrayGrisesNuevo[] = new double[arrayGrisesAcumulativoNorm.length];
-		for(int x = 0; x < arrayGrisesNuevo.length; x ++){
-			arrayGrisesNuevo[x] = 0;
-		}
 		int minIndex = 0;
 		int Vin, Vout;
 		Color colorAux, valor;
@@ -366,6 +371,7 @@ public class Imagen {
 					minIndex = i;
 				}
 			}
+			System.out.print(minIndex);
 			//arrayGrisesNuevo[x] = imAux.getArrayGrisesAcumulativoNorm()[minIndex];
 			for( int i = 0; i < getImageActual().getWidth(); i++ ){
 	            for( int j = 0; j < getImageActual().getHeight(); j++ ){
@@ -460,7 +466,8 @@ public class Imagen {
 				color2=new Color(imAux.getImageActual().getRGB(i, j));
 				gris2=color2.getRed();
 				gris3 = Math.abs(gris2-gris1);
-				color3 = new Color(gris3, gris3, gris3);
+				if (gris3 > 1){ System.out.println(gris3); color3 = new Color(255, 0, 0);}
+				else color3 = color1;
 				imgDif.getImageActual().setRGB(i, j, color3.getRGB());
 			}
 		}
@@ -471,5 +478,13 @@ public class Imagen {
 		 boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
 		 WritableRaster raster = bi.copyData(null);
 		 return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+	}
+
+	public BufferedImage getHistogramaAcNormImg() {
+		return histogramaAcNormImg;
+	}
+
+	public void setHistogramaAcNormImg(BufferedImage histogramaAcNormImg) {
+		this.histogramaAcNormImg = histogramaAcNormImg;
 	}
 }

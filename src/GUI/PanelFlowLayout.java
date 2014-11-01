@@ -23,7 +23,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, gris, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar;
+    private JMenuItem abrir, gris, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -83,7 +83,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   menu.add(gamma);
     		   gamma.addActionListener(this);
     		   
-    		   menu= new JMenu("Análisis");
+    		   menu= new JMenu("Anï¿½lisis");
     		   barra1.add(menu);
     		   
     		   histogram= new JMenuItem("Histograma");
@@ -93,6 +93,10 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   histogramAc= new JMenuItem("Histograma Acumulativo");
     		   menu.add(histogramAc);
     		   histogramAc.addActionListener(this);
+    		   
+    		   histogramAcNorm= new JMenuItem("Histograma Acumulativo Normalizado");
+    		   menu.add(histogramAcNorm);
+    		   histogramAcNorm.addActionListener(this);
     		   menu.addSeparator();
     		   
     		   espHist= new JMenuItem("Especificacion del histograma");
@@ -160,6 +164,19 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				}
 				//Se crea un objeto imagen de la grï¿½fica y se aï¿½ade a un FrameInterno
 				FrameInterno fi = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaAcImg());
+				panel.setVisible(true);
+				panel.add(fi);
+			}
+			else if(e.getSource() == histogramAcNorm) {
+				//Generamos el histograma
+				try {
+					((FrameInterno)(panel.getSelectedFrame())).getImg().generarHistogramaAcNorm();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				//Se crea un objeto imagen de la grï¿½fica y se aï¿½ade a un FrameInterno
+				FrameInterno fi = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().getHistogramaAcNormImg());
 				panel.setVisible(true);
 				panel.add(fi);
 			}
@@ -231,7 +248,6 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				Imagen imAux = new Imagen();
 				try {
 					imAux.escalaGrises();
-					imAux.normalize();
 					imAux.generarHistogramaAcNorm();
 					((FrameInterno)(panel.getSelectedFrame())).getImg().especificacionHistograma(imAux);
 					((FrameInterno)(panel.getSelectedFrame())).actualize();
@@ -252,7 +268,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 			else if(e.getSource() == dif) {
 				Imagen imAux = new Imagen();
 				imAux.escalaGrises();
-				Imagen imDif = new Imagen(((FrameInterno)(panel.getSelectedFrame())).getImg().diferencia(imAux));
+				Imagen imDif = new Imagen(((FrameInterno)(panel.getSelectedFrame())).getImg().diferencia(imAux), 0);
 				FrameInterno fi = new FrameInterno(imDif);
 				panel.setVisible(true);
 				panel.add(fi);
