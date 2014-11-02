@@ -327,12 +327,17 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 								arrayCampos[1][0] = Integer.parseInt(campo3.getText());
 								arrayCampos[1][1] = Integer.parseInt(campo4.getText());
 								
-								//Pasar Array a función de la imagen actual que haga el resto
+								((FrameInterno)(panel.getSelectedFrame())).getImg().transPorTramos(arrayCampos);
+								((FrameInterno)(panel.getSelectedFrame())).actualize();
 							}
 						}
 					} //Class
 					
 					Grid1Tramo tipo1 = new Grid1Tramo("Introducir Coordenadas");
+					
+				break;
+				case 2:
+					
 					
 				} //Switch
 			} //elseif

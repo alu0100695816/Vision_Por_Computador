@@ -351,6 +351,42 @@ public class Imagen {
 		generarHistograma();
 		generarHistogramaAc();
 	}
+	
+	public double calcPendiente(int x1, int y1, int x2, int y2) {
+		int dividendo = y2-y1;
+		int divisor = x2-x1;
+		return dividendo/divisor;
+	}
+	
+	public double calcConstante(double pendiente,int x1, int y1) {
+		double res1 = pendiente*x1;
+		return y1-res1;
+	}
+	
+	public void transPorTramos(int[][] arrayCoord) {
+		switch(arrayCoord.length) {
+		case 2:
+			int[] arrayAux = new int[256];
+			double a = calcPendiente(arrayCoord[0][0], arrayCoord[0][1], arrayCoord[1][0],arrayCoord[1][1]);
+			double b = calcConstante(a, arrayCoord[0][0], arrayCoord[0][1]);
+			System.out.println(a +" "+b);
+			
+			for(int i = 0; i < 256; i++) {
+				arrayAux[i] = (int)(Math.round(a*i+b));
+			}
+			
+			for(int i = 0; i < getImageActual().getWidth(); i++ ){
+	            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+	            	Color colorAux=new Color(this.getImageActual().getRGB(i, j));
+	            	int Vin=(int)(colorAux.getRed());
+	            	int Vout = arrayAux[Vin];
+	            	Color valor = new Color(Vout, Vout, Vout);
+	            	getImageActual().setRGB(i, j, valor.getRGB());
+	            }
+	    	}
+		break;
+		} //Switch
+	} //Function
 
 	public void especificacionHistograma(Imagen imAux) throws IOException {
 		generarHistogramaAcNorm();
