@@ -14,6 +14,8 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.lang.Math;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Imagen {
 
@@ -352,27 +354,26 @@ public class Imagen {
 		generarHistogramaAc();
 	}
 	
-	public double calcPendiente(int x1, int y1, int x2, int y2) {
+	public BigDecimal calcPendiente(int x1, int y1, int x2, int y2) {
 		int dividendo = y2-y1;
 		int divisor = x2-x1;
-		return dividendo/divisor;
+		return new BigDecimal(dividendo).divide(new BigDecimal(divisor), 3, RoundingMode.HALF_UP);
 	}
 	
-	public double calcConstante(double pendiente,int x1, int y1) {
-		double res1 = pendiente*x1;
-		return y1-res1;
+	public BigDecimal calcConstante(BigDecimal pendiente,int x1, int y1) {
+		BigDecimal res1 = pendiente.multiply(new BigDecimal(x1));
+		return new BigDecimal(y1).subtract(res1);
 	}
 	
 	public void transPorTramos(int[][] arrayCoord) {
 		switch(arrayCoord.length) {
 		case 2:
 			int[] arrayAux = new int[256];
-			double a = calcPendiente(arrayCoord[0][0], arrayCoord[0][1], arrayCoord[1][0],arrayCoord[1][1]);
-			double b = calcConstante(a, arrayCoord[0][0], arrayCoord[0][1]);
-			System.out.println(a +" "+b);
+			BigDecimal a = calcPendiente(arrayCoord[0][0], arrayCoord[0][1], arrayCoord[1][0],arrayCoord[1][1]);
+			BigDecimal b = calcConstante(a, arrayCoord[0][0], arrayCoord[0][1]);
 			
 			for(int i = 0; i < 256; i++) {
-				arrayAux[i] = (int)(Math.round(a*i+b));
+				arrayAux[i] = (((a.multiply(new BigDecimal(i))).add(b)).setScale(0, RoundingMode.HALF_UP)).intValueExact();
 			}
 			
 			for(int i = 0; i < getImageActual().getWidth(); i++ ){
@@ -384,6 +385,7 @@ public class Imagen {
 	            	getImageActual().setRGB(i, j, valor.getRGB());
 	            }
 	    	}
+			escalaGrises();
 		break;
 		} //Switch
 	} //Function
