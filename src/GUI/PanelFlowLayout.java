@@ -337,7 +337,186 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 					
 				break;
 				case 2:
+					class Grid2Tramo extends JFrame implements ActionListener {
+						
+						private static final long serialVersionUID = 1L;
+						GridLayout inputs = new GridLayout(4,2);
+						JButton confirm = new JButton("Confirmar Coordenadas");
+						int[][] arrayCampos = new int[3][2];
+						
+						JTextField campo1 = new JTextField("0",5);
+				        JTextField campo2 = new JTextField("0",5);
+				        JTextField campo3 = new JTextField("127",5);
+				        JTextField campo4 = new JTextField("127",5);
+				        JTextField campo5 = new JTextField("255",5);
+				        JTextField campo6 = new JTextField("255",5);
+						
+						public Grid2Tramo(String name) {
+					        super(name);
+					        
+					        final JPanel pan = new JPanel();
+					        pan.setLayout(inputs);
+					        confirm.addActionListener(this);
+					        
+							pan.add(campo1);
+							pan.add(campo2);
+							pan.add(campo3);
+							pan.add(campo4);
+							pan.add(campo5);
+							pan.add(campo6);
+							pan.add(confirm);
+							
+							this.setContentPane(pan);
+							this.setLocationRelativeTo(null);
+							this.setVisible(true);
+							this.pack();
+					        this.setResizable(false);
+					    } //Constructor
+						
+						public void actionPerformed(ActionEvent e) {
+							if(e.getSource() == confirm) {
+								arrayCampos[0][0] = Integer.parseInt(campo1.getText());
+								arrayCampos[0][1] = Integer.parseInt(campo2.getText());
+								arrayCampos[1][0] = Integer.parseInt(campo3.getText());
+								arrayCampos[1][1] = Integer.parseInt(campo4.getText());
+								arrayCampos[2][0] = Integer.parseInt(campo5.getText());
+								arrayCampos[2][1] = Integer.parseInt(campo6.getText());
+								
+								((FrameInterno)(panel.getSelectedFrame())).getImg().transPorTramos(arrayCampos);
+								((FrameInterno)(panel.getSelectedFrame())).actualize();
+							}
+						}
+					} //Class
 					
+					Grid2Tramo tipo2 = new Grid2Tramo("Introducir Coordenadas");
+					
+				break;
+				case 3:
+					class Grid3Tramo extends JFrame implements ActionListener {
+						
+						private static final long serialVersionUID = 1L;
+						GridLayout inputs = new GridLayout(5,2);
+						JButton confirm = new JButton("Confirmar Coordenadas");
+						int[][] arrayCampos = new int[4][2];
+						
+						JTextField campo1 = new JTextField("0",5);
+				        JTextField campo2 = new JTextField("0",5);
+				        JTextField campo3 = new JTextField("85",5);
+				        JTextField campo4 = new JTextField("85",5);
+				        JTextField campo5 = new JTextField("170",5);
+				        JTextField campo6 = new JTextField("170",5);
+				        JTextField campo7 = new JTextField("255",5);
+				        JTextField campo8 = new JTextField("255",5);
+						
+						public Grid3Tramo(String name) {
+					        super(name);
+					        
+					        final JPanel pan = new JPanel();
+					        pan.setLayout(inputs);
+					        confirm.addActionListener(this);
+					        
+							pan.add(campo1);
+							pan.add(campo2);
+							pan.add(campo3);
+							pan.add(campo4);
+							pan.add(campo5);
+							pan.add(campo6);
+							pan.add(campo7);
+							pan.add(campo8);
+							pan.add(confirm);
+							
+							this.setContentPane(pan);
+							this.setLocationRelativeTo(null);
+							this.setVisible(true);
+							this.pack();
+					        this.setResizable(false);
+					    } //Constructor
+						
+						public void actionPerformed(ActionEvent e) {
+							if(e.getSource() == confirm) {
+								arrayCampos[0][0] = Integer.parseInt(campo1.getText());
+								arrayCampos[0][1] = Integer.parseInt(campo2.getText());
+								arrayCampos[1][0] = Integer.parseInt(campo3.getText());
+								arrayCampos[1][1] = Integer.parseInt(campo4.getText());
+								arrayCampos[2][0] = Integer.parseInt(campo5.getText());
+								arrayCampos[2][1] = Integer.parseInt(campo6.getText());
+								arrayCampos[3][0] = Integer.parseInt(campo5.getText());
+								arrayCampos[3][1] = Integer.parseInt(campo6.getText());
+								
+								((FrameInterno)(panel.getSelectedFrame())).getImg().transPorTramos(arrayCampos);
+								((FrameInterno)(panel.getSelectedFrame())).actualize();
+							}
+						}
+					} //Class
+					
+					Grid3Tramo tipo3 = new Grid3Tramo("Introducir Coordenadas");
+					
+				break;
+				case 4:
+					class Grid4Tramo extends JFrame implements ActionListener {
+						
+						private static final long serialVersionUID = 1L;
+						GridLayout inputs = new GridLayout(6,2);
+						JButton confirm = new JButton("Confirmar Coordenadas");
+						int[][] arrayCampos = new int[5][2];
+						
+						JTextField campo1 = new JTextField("0",5);
+				        JTextField campo2 = new JTextField("0",5);
+				        JTextField campo3 = new JTextField("64",5);
+				        JTextField campo4 = new JTextField("64",5);
+				        JTextField campo5 = new JTextField("128",5);
+				        JTextField campo6 = new JTextField("128",5);
+				        JTextField campo7 = new JTextField("192",5);
+				        JTextField campo8 = new JTextField("192",5);
+				        JTextField campo9 = new JTextField("255",5);
+				        JTextField campo10 = new JTextField("255",5);
+						
+						public Grid4Tramo(String name) {
+					        super(name);
+					        
+					        final JPanel pan = new JPanel();
+					        pan.setLayout(inputs);
+					        confirm.addActionListener(this);
+					        
+							pan.add(campo1);
+							pan.add(campo2);
+							pan.add(campo3);
+							pan.add(campo4);
+							pan.add(campo5);
+							pan.add(campo6);
+							pan.add(campo7);
+							pan.add(campo8);
+							pan.add(campo9);
+							pan.add(campo10);
+							pan.add(confirm);
+							
+							this.setContentPane(pan);
+							this.setLocationRelativeTo(null);
+							this.setVisible(true);
+							this.pack();
+					        this.setResizable(false);
+					    } //Constructor
+						
+						public void actionPerformed(ActionEvent e) {
+							if(e.getSource() == confirm) {
+								arrayCampos[0][0] = Integer.parseInt(campo1.getText());
+								arrayCampos[0][1] = Integer.parseInt(campo2.getText());
+								arrayCampos[1][0] = Integer.parseInt(campo3.getText());
+								arrayCampos[1][1] = Integer.parseInt(campo4.getText());
+								arrayCampos[2][0] = Integer.parseInt(campo5.getText());
+								arrayCampos[2][1] = Integer.parseInt(campo6.getText());
+								arrayCampos[3][0] = Integer.parseInt(campo7.getText());
+								arrayCampos[3][1] = Integer.parseInt(campo8.getText());
+								arrayCampos[4][0] = Integer.parseInt(campo9.getText());
+								arrayCampos[4][1] = Integer.parseInt(campo10.getText());
+								
+								((FrameInterno)(panel.getSelectedFrame())).getImg().transPorTramos(arrayCampos);
+								((FrameInterno)(panel.getSelectedFrame())).actualize();
+							}
+						}
+					} //Class
+					
+					Grid4Tramo tipo4 = new Grid4Tramo("Introducir Coordenadas");
 					
 				} //Switch
 			} //elseif

@@ -357,7 +357,12 @@ public class Imagen {
 	public BigDecimal calcPendiente(int x1, int y1, int x2, int y2) {
 		int dividendo = y2-y1;
 		int divisor = x2-x1;
-		return new BigDecimal(dividendo).divide(new BigDecimal(divisor), 3, RoundingMode.HALF_UP);
+		if(divisor == 0) {
+			return new BigDecimal(0);
+		}
+		else {
+			return new BigDecimal(dividendo).divide(new BigDecimal(divisor), 3, RoundingMode.HALF_UP);
+		}
 	}
 	
 	public BigDecimal calcConstante(BigDecimal pendiente,int x1, int y1) {
@@ -366,12 +371,13 @@ public class Imagen {
 	}
 	
 	public void transPorTramos(int[][] arrayCoord) {
+		
+		int[] arrayAux = new int[256];
+		BigDecimal a = calcPendiente(arrayCoord[0][0], arrayCoord[0][1], arrayCoord[1][0],arrayCoord[1][1]);
+		BigDecimal b = calcConstante(a, arrayCoord[0][0], arrayCoord[0][1]);
+		
 		switch(arrayCoord.length) {
 		case 2:
-			int[] arrayAux = new int[256];
-			BigDecimal a = calcPendiente(arrayCoord[0][0], arrayCoord[0][1], arrayCoord[1][0],arrayCoord[1][1]);
-			BigDecimal b = calcConstante(a, arrayCoord[0][0], arrayCoord[0][1]);
-			
 			for(int i = 0; i < 256; i++) {
 				arrayAux[i] = (((a.multiply(new BigDecimal(i))).add(b)).setScale(0, RoundingMode.HALF_UP)).intValueExact();
 			}
@@ -387,6 +393,85 @@ public class Imagen {
 	    	}
 			escalaGrises();
 		break;
+		case 3:
+			for(int i = 0; i < arrayCoord[1][0]+1; i++) {
+				arrayAux[i] = (((a.multiply(new BigDecimal(i))).add(b)).setScale(0, RoundingMode.HALF_UP)).intValueExact();
+			}
+			a = calcPendiente(arrayCoord[1][0], arrayCoord[1][1], arrayCoord[2][0],arrayCoord[2][1]);
+			b = calcConstante(a, arrayCoord[1][0], arrayCoord[1][1]);
+			for(int i = arrayCoord[1][0]+1; i < 256; i++) {
+				arrayAux[i] = (((a.multiply(new BigDecimal(i))).add(b)).setScale(0, RoundingMode.HALF_UP)).intValueExact();
+			}
+			
+			for(int i = 0; i < getImageActual().getWidth(); i++ ){
+	            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+	            	Color colorAux=new Color(this.getImageActual().getRGB(i, j));
+	            	int Vin=(int)(colorAux.getRed());
+	            	int Vout = arrayAux[Vin];
+	            	Color valor = new Color(Vout, Vout, Vout);
+	            	getImageActual().setRGB(i, j, valor.getRGB());
+	            }
+	    	}
+			escalaGrises();	
+		break;
+		case 4:
+			for(int i = 0; i < arrayCoord[1][0]+1; i++) {
+				arrayAux[i] = (((a.multiply(new BigDecimal(i))).add(b)).setScale(0, RoundingMode.HALF_UP)).intValueExact();
+			}
+			a = calcPendiente(arrayCoord[1][0], arrayCoord[1][1], arrayCoord[2][0],arrayCoord[2][1]);
+			b = calcConstante(a, arrayCoord[1][0], arrayCoord[1][1]);
+			for(int i = arrayCoord[1][0]+1; i < arrayCoord[2][0]+1; i++) {
+				arrayAux[i] = (((a.multiply(new BigDecimal(i))).add(b)).setScale(0, RoundingMode.HALF_UP)).intValueExact();
+			}
+			a = calcPendiente(arrayCoord[2][0], arrayCoord[2][1], arrayCoord[3][0],arrayCoord[3][1]);
+			b = calcConstante(a, arrayCoord[2][0], arrayCoord[2][1]);
+			for(int i = arrayCoord[2][0]+1; i < 256; i++) {
+				arrayAux[i] = (((a.multiply(new BigDecimal(i))).add(b)).setScale(0, RoundingMode.HALF_UP)).intValueExact();
+			}
+			
+			for(int i = 0; i < getImageActual().getWidth(); i++ ){
+	            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+	            	Color colorAux=new Color(this.getImageActual().getRGB(i, j));
+	            	int Vin=(int)(colorAux.getRed());
+	            	int Vout = arrayAux[Vin];
+	            	Color valor = new Color(Vout, Vout, Vout);
+	            	getImageActual().setRGB(i, j, valor.getRGB());
+	            }
+	    	}
+			escalaGrises();
+		break;
+		case 5:
+			for(int i = 0; i < arrayCoord[1][0]+1; i++) {
+				arrayAux[i] = (((a.multiply(new BigDecimal(i))).add(b)).setScale(0, RoundingMode.HALF_UP)).intValueExact();
+			}
+			a = calcPendiente(arrayCoord[1][0], arrayCoord[1][1], arrayCoord[2][0],arrayCoord[2][1]);
+			b = calcConstante(a, arrayCoord[1][0], arrayCoord[1][1]);
+			for(int i = arrayCoord[1][0]+1; i < arrayCoord[2][0]+1; i++) {
+				arrayAux[i] = (((a.multiply(new BigDecimal(i))).add(b)).setScale(0, RoundingMode.HALF_UP)).intValueExact();
+			}
+			a = calcPendiente(arrayCoord[2][0], arrayCoord[2][1], arrayCoord[3][0],arrayCoord[3][1]);
+			b = calcConstante(a, arrayCoord[2][0], arrayCoord[2][1]);
+			for(int i = arrayCoord[2][0]+1; i < arrayCoord[3][0]+1; i++) {
+				arrayAux[i] = (((a.multiply(new BigDecimal(i))).add(b)).setScale(0, RoundingMode.HALF_UP)).intValueExact();
+			}
+			a = calcPendiente(arrayCoord[3][0], arrayCoord[3][1], arrayCoord[4][0],arrayCoord[4][1]);
+			b = calcConstante(a, arrayCoord[3][0], arrayCoord[3][1]);
+			for(int i = arrayCoord[3][0]+1; i < 256; i++) {
+				arrayAux[i] = (((a.multiply(new BigDecimal(i))).add(b)).setScale(0, RoundingMode.HALF_UP)).intValueExact();
+			}
+			
+			for(int i = 0; i < getImageActual().getWidth(); i++ ){
+	            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+	            	Color colorAux=new Color(this.getImageActual().getRGB(i, j));
+	            	int Vin=(int)(colorAux.getRed());
+	            	int Vout = arrayAux[Vin];
+	            	Color valor = new Color(Vout, Vout, Vout);
+	            	getImageActual().setRGB(i, j, valor.getRGB());
+	            }
+	    	}
+			escalaGrises();
+		break;
+		
 		} //Switch
 	} //Function
 
