@@ -403,6 +403,7 @@ public class Imagen {
             	getImageActual().setRGB(i, j, valor.getRGB());
             }
     	}
+		escalaGrises();
 	} //Function
 
 	public void especificacionHistograma(Imagen imAux) throws IOException {
