@@ -561,7 +561,7 @@ public class Imagen {
 		return imgDif.getImageActual();
 	}
 	
-	public BufferedImage diferenciaRojo(Imagen imAux) {
+	public BufferedImage diferenciaRojo(Imagen imAux, int umbral) {
 		Color color1, color2, color3;
 		int gris1, gris2, gris3;
 		Imagen imgDif = new Imagen(deepCopy(this.getImageActual()));
@@ -572,7 +572,7 @@ public class Imagen {
 				color2=new Color(imAux.getImageActual().getRGB(i, j));
 				gris2=color2.getRed();
 				gris3 = Math.abs(gris2-gris1);
-				if (gris3 > 1){ System.out.println(gris3); color3 = new Color(255, 0, 0);}
+				if (gris3 > umbral){ System.out.println(gris3); color3 = new Color(255, 0, 0);}
 				else color3 = color1;
 				imgDif.getImageActual().setRGB(i, j, color3.getRGB());
 			}

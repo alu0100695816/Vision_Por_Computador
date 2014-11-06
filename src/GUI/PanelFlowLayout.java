@@ -26,7 +26,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, gris, info, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm, tramos;
+    private JMenuItem abrir, gris, info, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm, tramos, mapacamb;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -121,6 +121,10 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   dif= new JMenuItem("Diferencia entre dos imagenes");
     		   menu.add(dif);
     		   dif.addActionListener(this);
+    		   
+    		   mapacamb= new JMenuItem("Mapa de Cambios");
+    		   menu.add(mapacamb);
+    		   mapacamb.addActionListener(this);
 
     	   }
 
@@ -320,6 +324,16 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				double gamma = Float.parseFloat(JOptionPane.showInputDialog("Seleccione el indice gamma"));
 				((FrameInterno)(panel.getSelectedFrame())).getImg().correccionGamma(gamma);	
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
+			}
+			else if(e.getSource() == mapacamb) {
+				int umbral = (int)(Float.parseFloat(JOptionPane.showInputDialog("Seleccione el umbral para establecer el mapa de cambios")));
+				Imagen imAux = new Imagen();
+				imAux.escalaGrises();
+				Imagen imDif = null;
+				imDif = new Imagen(((FrameInterno)(panel.getSelectedFrame())).getImg().diferenciaRojo(imAux, umbral), 0);
+				FrameInterno fi = new FrameInterno(imDif);
+				panel.setVisible(true);
+				panel.add(fi);
 			}
 			else if(e.getSource() == dif) {
 				Imagen imAux = new Imagen();
