@@ -35,7 +35,6 @@ public class Imagen {
 	private double contraste;
 	private double entropia;
 	private double media;
-	private double varianza;
 	private double desvTip;
 	private int[] pos = new int[2]; //pos[0]=x, pos[1]=y
 	private int[] nivelGris;
@@ -48,25 +47,25 @@ public class Imagen {
     
 	public Imagen(){
 		abrirImagen();
-		tam[0] = imageActual.getWidth();
-		tam[1] = imageActual.getHeight();
-		nivelGris = new int[tam[0]*tam[1]];
+		getTam()[0] = imageActual.getWidth();
+		getTam()[1] = imageActual.getHeight();
+		nivelGris = new int[getTam()[0]*getTam()[1]];
 		escalaGrises();
 	}
 	
 	public Imagen(BufferedImage img){
 		setImageActual(img);
-		tam[0] = imageActual.getWidth();
-		tam[1] = imageActual.getHeight();
-		nivelGris = new int[tam[0]*tam[1]];
+		getTam()[0] = imageActual.getWidth();
+		getTam()[1] = imageActual.getHeight();
+		nivelGris = new int[getTam()[0]*getTam()[1]];
 		escalaGrises();
 	}
 	
     public Imagen(BufferedImage img, int i) {
     	setImageActual(img);
-		tam[0] = imageActual.getWidth();
-		tam[1] = imageActual.getHeight();
-		nivelGris = new int[tam[0]*tam[1]];
+		getTam()[0] = imageActual.getWidth();
+		getTam()[1] = imageActual.getHeight();
+		nivelGris = new int[getTam()[0]*getTam()[1]];
 	}
 
 	//Método que devuelve una imagen abierta desde archivo
@@ -92,7 +91,7 @@ public class Imagen {
                 //Devuelve el fichero seleccionado
                 File imagenSeleccionada=selector.getSelectedFile();
                 String[] aux = imagenSeleccionada.getName().split("[.]");
-                this.formato = aux[aux.length-1];
+                this.setFormato(aux[aux.length-1]);
                 //Asignamos a la variable bmp la imagen leida
                 bmp = ImageIO.read(imagenSeleccionada);
             } catch (Exception e) {
@@ -124,8 +123,8 @@ public class Imagen {
                 gris=(int)(colorAux.getRed()*0.299+colorAux.getGreen()*0.587+colorAux.getBlue()*0.114);
                 arrayGrises[gris] += 1;
                 nivelGris[j*getImageActual().getWidth()+i] = gris;
-                if(gris < minmax[0]) minmax[0] = gris;
-                if(gris > minmax[1]) minmax[1] = gris;
+                if(gris < getMinmax()[0]) getMinmax()[0] = gris;
+                if(gris > getMinmax()[1]) getMinmax()[1] = gris;
                 //Cambiamos a formato sRGB
                 //Asignamos el nuevo valor al BufferedImage
                 
@@ -140,16 +139,47 @@ public class Imagen {
         //Retornamos la imagen
         return getImageActual();
     }
+    
+    public void rellenarArrayGrises(){
+    	for(int i = 0; i < 256; i++) {
+    		arrayGrises[i] = 0;
+    	}
+    	int gris;
+        Color colorAux;
+    	for( int i = 0; i < getImageActual().getWidth(); i++ ){
+            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+                //Almacenamos el color del píxel
+                colorAux=new Color(this.getImageActual().getRGB(i, j));
+                //Calculamos la media de los tres canales (rojo, verde, azul)
+                gris=colorAux.getRed();
+                arrayGrises[gris] += 1;
+                nivelGris[j*getImageActual().getWidth()+i] = gris;
+                if(gris < getMinmax()[0]) getMinmax()[0] = gris;
+                if(gris > getMinmax()[1]) getMinmax()[1] = gris;
+                //Cambiamos a formato sRGB
+                //Asignamos el nuevo valor al BufferedImage
+                
+                Color valor = new Color(gris, gris, gris);
+                getImageActual().setRGB(i, j, valor.getRGB());
+            }
+        }
+        fillArrayGrisesAcumulativo();
+        initBrillo();
+        initContraste();
+        initEntropia();
+    }
 
-    private void initEntropia() {
+    public void initEntropia() {
     	double suma = 0;
+    	double tam = getNumPixels();
 		for(int i = 0; i < 256; i++){
-			suma += (arrayGrises[i]/getNumPixels()) * (Math.log(arrayGrises[i]/getNumPixels())/Math.log(2));
+			if(arrayGrises[i] != 0) suma += (arrayGrises[i]/tam) * (Math.log(arrayGrises[i]/tam)/Math.log(2));
 		}
-		this.entropia = -suma;
-	}
+		suma = Math.floor(suma * 100) / 100;
+		this.setEntropia(-suma);
+    }
 
-	private void initBrillo() {
+	public void initBrillo() {
     	double suma = 0;
 		for(int i = 0; i < 256; i++){
 			suma += arrayGrises[i] * i;
@@ -158,7 +188,7 @@ public class Imagen {
 		this.brillo = Math.floor(this.brillo * 100) / 100;
 	}
 
-	private void initContraste() {
+	public void initContraste() {
 		double suma = 0;
 		for(int i = 0; i < 256; i++){
 			suma += arrayGrises[i] * (i-this.brillo)*(i-this.brillo);
@@ -167,12 +197,12 @@ public class Imagen {
 		this.contraste = Math.floor(this.contraste * 100) / 100;
 	}
 
-	public void actBrilloContraste() {
+	public void actBrilloContraste() throws IOException {
 		double A = contraste/desvTip;
 		double B = brillo - A*media;
     	for (int x = 0; x < getImageActual().getWidth(); x++) {
     		for (int y = 0; y < getImageActual().getHeight(); y++) {
-    			nivelGris[y*getImageActual().getWidth()+x] = (int) (A*nivelGris[y*getImageActual().getWidth()+x]+B);
+    			nivelGris[y*getImageActual().getWidth()+x] = (int) Math.round((A*nivelGris[y*getImageActual().getWidth()+x]+B));
     			if(nivelGris[y*getImageActual().getWidth()+x] > 255) nivelGris[y*getImageActual().getWidth()+x] = 255; if(nivelGris[y*getImageActual().getWidth()+x] < 0) nivelGris[y*getImageActual().getWidth()+x] = 0;
     			Color valor = new Color(getGris(x,y), getGris(x,y), getGris(x,y));
                 getImageActual().setRGB(x, y, valor.getRGB());
@@ -244,11 +274,11 @@ public class Imagen {
 	}
 
 	public int getNumPixels() {
-		return tam[0]*tam[1];
+		return getTam()[0]*getTam()[1];
 	}
 
 	public int getGris(int i, int j) {
-		if((j>=0 && i >=0) && (j<=tam[1] && i <=tam[0]))return nivelGris[j*tam[0]+i];
+		if((j>=0 && i >=0) && (j<=getTam()[1] && i <=getTam()[0]))return nivelGris[j*getTam()[0]+i];
 		else return 0;
 	}
 	
@@ -310,7 +340,7 @@ public class Imagen {
 		return contraste;
 	}
 
-	public void setBrilloContraste(double brillo, double contraste) {
+	public void setBrilloContraste(double brillo, double contraste) throws IOException {
 		calcMedia();
 		calcVarianza();
 		this.brillo = brillo;
@@ -325,7 +355,6 @@ public class Imagen {
 	}
 	
 	public void calcVarianza(){
-		varianza = contraste*contraste;
 		desvTip = contraste;
 	}
 	
@@ -475,7 +504,7 @@ public class Imagen {
         	try {
         		File f = selector.getSelectedFile();
         	    String test = f.getAbsolutePath();
-        	    ImageIO.write(getImageActual(), formato, selector.getSelectedFile());
+        	    ImageIO.write(getImageActual(), getFormato(), selector.getSelectedFile());
         	} catch (IOException e) {
         		
         	}
@@ -509,7 +538,30 @@ public class Imagen {
     	 }
 	}
 
-	public BufferedImage diferencia(Imagen imAux) {
+	public BufferedImage diferencia(Imagen imAux) throws IOException {
+		Color color1, color2, color3;
+		int gris1, gris2, gris3;
+		Imagen imgDif = new Imagen(deepCopy(this.getImageActual()));
+		for(int i = 0; i < getImageActual().getWidth(); i++){
+			for(int j = 0; j < getImageActual().getHeight(); j++){
+				color1=new Color(this.getImageActual().getRGB(i, j));
+				gris1=color1.getRed();
+				color2=new Color(imAux.getImageActual().getRGB(i, j));
+				gris2=color2.getRed();
+				gris3 = Math.abs(gris2-gris1);
+				//if (gris3 > 1){ System.out.println(gris3); color3 = new Color(255, 0, 0);}
+				//else color3 = color1;
+				color3 = new Color(gris3, gris3, gris3);
+				imgDif.getImageActual().setRGB(i, j, color3.getRGB());
+			}
+		}
+		imgDif.escalaGrises();
+		imgDif.generarHistograma();
+		imgDif.generarHistogramaAc();
+		return imgDif.getImageActual();
+	}
+	
+	public BufferedImage diferenciaRojo(Imagen imAux) {
 		Color color1, color2, color3;
 		int gris1, gris2, gris3;
 		Imagen imgDif = new Imagen(deepCopy(this.getImageActual()));
@@ -540,5 +592,37 @@ public class Imagen {
 
 	public void setHistogramaAcNormImg(BufferedImage histogramaAcNormImg) {
 		this.histogramaAcNormImg = histogramaAcNormImg;
+	}
+
+	public String getFormato() {
+		return formato;
+	}
+
+	public void setFormato(String formato) {
+		this.formato = formato;
+	}
+
+	public int[] getMinmax() {
+		return minmax;
+	}
+
+	public void setMinmax(int[] minmax) {
+		this.minmax = minmax;
+	}
+
+	public double getEntropia() {
+		return entropia;
+	}
+
+	public void setEntropia(double entropia) {
+		this.entropia = entropia;
+	}
+
+	public int[] getTam() {
+		return tam;
+	}
+
+	public void setTam(int[] tam) {
+		this.tam = tam;
 	}
 }

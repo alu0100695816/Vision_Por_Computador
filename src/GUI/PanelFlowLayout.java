@@ -26,7 +26,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, gris, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm, tramos;
+    private JMenuItem abrir, gris, info, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm, tramos;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -73,6 +73,10 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   gris= new JMenuItem("Escala Grises");
     		   menu.add(gris);
     		   gris.addActionListener(this);
+    		   
+    		   info= new JMenuItem("Info");
+    		   menu.add(info);
+    		   info.addActionListener(this);
    
     		   ROI= new JMenuItem("Separar Region de interes");
     		   menu.add(ROI);
@@ -140,6 +144,32 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 			else if(e.getSource() == gris){
 				((FrameInterno)(panel.getSelectedFrame())).getImg().escalaGrises();
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
+			}
+			else if(e.getSource() == info){
+				((FrameInterno)(panel.getSelectedFrame())).getImg().escalaGrises();
+				JLabel ancho = new JLabel("Ancho: " + Integer.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getTam()[0]));
+				JLabel alto = new JLabel("Alto: " + Integer.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getTam()[1]));
+				JLabel form = new JLabel("Formato: " + ((FrameInterno)(panel.getSelectedFrame())).getImg().getFormato());
+				JLabel bri = new JLabel("Brillo: " + Double.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getBrillo()));
+				JLabel cont = new JLabel("Contraste: " + Double.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getContraste()));
+				JLabel ent = new JLabel("Entropia: " + Double.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getEntropia()));
+				JLabel min = new JLabel("Min. valor gris: " + Integer.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getMinmax()[0]));
+				JLabel max = new JLabel("Max. valor gris: " + Integer.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getMinmax()[1]));
+				JFrame fram = new JFrame();
+				JPanel pan = new JPanel();
+				pan.setLayout(new GridLayout(8,1));
+				pan.add(ancho);
+				pan.add(alto);
+				pan.add(form);
+				pan.add(bri);
+				pan.add(cont);
+				pan.add(ent);
+				pan.add(min);
+				pan.add(max);
+				pan.setVisible(true);
+				fram.setVisible(true);
+				fram.setContentPane(pan);
+				fram.pack();
 			}
 			else if(e.getSource() == ROI){
 				Imagen im = new Imagen(subImage(((FrameInterno)(panel.getSelectedFrame())).getImg().getImageActual(),((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[2]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[0], ((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[3]-((FrameInterno)(panel.getSelectedFrame())).getImg().getROI()[1]));
@@ -211,22 +241,24 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				panel.add(fi2);
 			}
 			else if(e.getSource() == bc) {
+				((FrameInterno)(panel.getSelectedFrame())).getImg().rellenarArrayGrises();
 				JFrame frame = new JFrame("Brillo y Contraste");
 				JPanel pan = new JPanel();
-				final JSlider brillo = new JSlider();
-				brillo.setValue((int) ((FrameInterno)(panel.getSelectedFrame())).getImg().getBrillo());
+				final JSlider brillo = new JSlider(0, 255, (int) ((FrameInterno)(panel.getSelectedFrame())).getImg().getBrillo());
 				JLabel bri = new JLabel("Brillo: ");
 				final JLabel numBri = new JLabel(Double.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getBrillo()));
 				JLabel con = new JLabel("Contraste: ");
 				final JLabel numCon = new JLabel(Double.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getContraste()));
-				brillo.setMaximum(255);
-				final JSlider contraste = new JSlider();
-				contraste.setMaximum(127);
-				contraste.setValue((int) ((FrameInterno)(panel.getSelectedFrame())).getImg().getContraste());
+				final JSlider contraste = new JSlider(0,127,(int) ((FrameInterno)(panel.getSelectedFrame())).getImg().getContraste());
 				
 				brillo.addChangeListener(new ChangeListener() {
 				      public void stateChanged(ChangeEvent e) {
-				    	  ((FrameInterno)(panel.getSelectedFrame())).getImg().setBrilloContraste(brillo.getValue(),contraste.getValue());
+				    	  try {
+							((FrameInterno)(panel.getSelectedFrame())).getImg().setBrilloContraste(brillo.getValue(),contraste.getValue());
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 				    	  numBri.setText(Double.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getBrillo()));
 				    	  ((FrameInterno)(panel.getSelectedFrame())).actualize();
 				      }
@@ -234,7 +266,12 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				 
 				contraste.addChangeListener(new ChangeListener() {
 				      public void stateChanged(ChangeEvent e) {
-				    	  ((FrameInterno)(panel.getSelectedFrame())).getImg().setBrilloContraste(brillo.getValue(),contraste.getValue());
+				    	  try {
+							((FrameInterno)(panel.getSelectedFrame())).getImg().setBrilloContraste(brillo.getValue(),contraste.getValue());
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 						  numCon.setText(Double.toString(((FrameInterno)(panel.getSelectedFrame())).getImg().getContraste()));
 				    	  ((FrameInterno)(panel.getSelectedFrame())).actualize();
 				      }
@@ -250,6 +287,18 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				pan.setVisible(true);
 				frame.setVisible(true);
 				frame.pack();
+				try {
+					((FrameInterno)(panel.getSelectedFrame())).getImg().generarHistograma();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					((FrameInterno)(panel.getSelectedFrame())).getImg().generarHistogramaAc();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 			else if(e.getSource() == espHist) {
 				Imagen imAux = new Imagen();
@@ -275,14 +324,23 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 			else if(e.getSource() == dif) {
 				Imagen imAux = new Imagen();
 				imAux.escalaGrises();
-				Imagen imDif = new Imagen(((FrameInterno)(panel.getSelectedFrame())).getImg().diferencia(imAux), 0);
+				Imagen imDif = null;
+				try {
+					imDif = new Imagen(((FrameInterno)(panel.getSelectedFrame())).getImg().diferencia(imAux), 0);
+					imDif.escalaGrises();
+					imDif.generarHistograma();
+					imDif.generarHistogramaAc();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				FrameInterno fi = new FrameInterno(imDif);
 				panel.setVisible(true);
 				panel.add(fi);
 				
 			}
 			else if(e.getSource() == tramos) {
-				int numTramos = (int)(Float.parseFloat(JOptionPane.showInputDialog("Indique el número de tramos(1-4):")));
+				int numTramos = (int)(Float.parseFloat(JOptionPane.showInputDialog("Indique el nï¿½mero de tramos(1-4):")));
 				while(numTramos < 1 || numTramos > 4) {
 					numTramos = (int)(Float.parseFloat(JOptionPane.showInputDialog("Error: solo entre 1 y 4 tramos. Introduzca de nuevo:")));
 				}
