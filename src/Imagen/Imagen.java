@@ -437,36 +437,42 @@ public class Imagen {
 
 	public void especificacionHistograma(Imagen imAux) throws IOException {
 		generarHistogramaAcNorm();
-		double value, aux;
-		double min = 999999.9;
+		double value, aux, aux2;
 		int minIndex = 0;
 		int Vin, Vout;
 		Color colorAux, valor;
-		for(int x = 0; x < arrayGrisesAcumulativoNorm.length; x ++){
+		int[] matriz = new int[256];
+		for(int x = 0; x < arrayGrisesAcumulativoNorm.length; x++){
 			value = arrayGrisesAcumulativoNorm[x];
-			min = 999999.9;
 			for(int i = 0; i < imAux.getArrayGrisesAcumulativoNorm().length; i++){
 				aux = imAux.getArrayGrisesAcumulativoNorm()[i];
-				if(value < aux) aux = aux - value;
-				else if(value >= aux) aux = value - aux;
-				if(aux < min){ 
-					min = aux;
+				if(value == aux){
 					minIndex = i;
+					break;
 				}
+				else if(value < aux){ 
+					if(i == 0){
+						minIndex = 0;
+					}
+					else{
+						aux2 = imAux.getArrayGrisesAcumulativoNorm()[i-1];
+						if(Math.abs(value-aux) > Math.abs(value-aux2)) minIndex = i-1;
+						else minIndex = i;
+					}
+					break;
+				}
+				if(i == 255) minIndex = 255;
 			}
-			System.out.print(minIndex);
-			//arrayGrisesNuevo[x] = imAux.getArrayGrisesAcumulativoNorm()[minIndex];
-			for( int i = 0; i < getImageActual().getWidth(); i++ ){
-	            for( int j = 0; j < getImageActual().getHeight(); j++ ){
-	            	colorAux=new Color(this.getImageActual().getRGB(i, j));
-	            	Vin=colorAux.getRed();
-	            	if(Vin == x){
-	            		Vout = minIndex;
-	            		valor = new Color(Vout, Vout, Vout);
-	            		getImageActual().setRGB(i, j, valor.getRGB());
-	            	}
-	             }
-	    	 }
+			matriz[x] = minIndex;
+		}
+		for( int i = 0; i < getImageActual().getWidth(); i++ ){
+	        for( int j = 0; j < getImageActual().getHeight(); j++ ){
+	            colorAux=new Color(this.getImageActual().getRGB(i, j));
+	            Vin=colorAux.getRed();
+	            Vout = matriz[Vin];
+	            valor = new Color(Vout, Vout, Vout);
+	            getImageActual().setRGB(i, j, valor.getRGB());
+	         }
 		}
 		escalaGrises();
 		generarHistograma();
