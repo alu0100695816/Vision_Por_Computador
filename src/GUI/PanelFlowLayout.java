@@ -10,10 +10,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 
 import java.awt.event.*;
 
@@ -26,7 +24,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, gris, info, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm, tramos, mapacamb;
+    private JMenuItem abrir, gris, info, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm, tramos, mapacamb, evertical, ehorizontal, trasp, rotDer, rotIzq, escalado, rotacion;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -77,10 +75,6 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   info= new JMenuItem("Info");
     		   menu.add(info);
     		   info.addActionListener(this);
-   
-    		   ROI= new JMenuItem("Separar Region de interes");
-    		   menu.add(ROI);
-    		   ROI.addActionListener(this);
     		   
     		   bc= new JMenuItem("Brillo/Contraste");
     		   menu.add(bc);
@@ -94,7 +88,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   menu.add(tramos);
     		   tramos.addActionListener(this);
     		   
-    		   menu= new JMenu("An�lisis");
+    		   menu= new JMenu("Analisis");
     		   barra1.add(menu);
     		   
     		   histogram= new JMenuItem("Histograma");
@@ -125,10 +119,51 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   mapacamb= new JMenuItem("Mapa de Cambios");
     		   menu.add(mapacamb);
     		   mapacamb.addActionListener(this);
+    		   
+    		   menu = new JMenu("Operaciones geometricas");
+    		   barra1.add(menu);
+
+    		   ROI= new JMenuItem("Separar Region de interes");
+    		   menu.add(ROI);
+    		   ROI.addActionListener(this);
+    		   
+    		   
+    		   evertical= new JMenuItem("Espejo Vertical");
+    		   menu.add(evertical);
+    		   evertical.addActionListener(this);
+    		   
+    		   
+    		   ehorizontal= new JMenuItem("Espejo Horizontal");
+    		   menu.add(ehorizontal);
+    		   ehorizontal.addActionListener(this);
+    		   
+    		   
+    		   trasp= new JMenuItem("Traspuesta");
+    		   menu.add(trasp);
+    		   trasp.addActionListener(this);
+    		   
+    		   
+    		   rotIzq= new JMenuItem("Rotacion a la izquierda");
+    		   menu.add(rotIzq);
+    		   rotIzq.addActionListener(this);
+    		   
+    		   
+    		   rotDer= new JMenuItem("Rotacion a la derecha");
+    		   menu.add(rotDer);
+    		   rotDer.addActionListener(this);
+    		   
+    		   
+    		   escalado= new JMenuItem("Operacion de escalado");
+    		   menu.add(escalado);
+    		   escalado.addActionListener(this);
+    		   
+    		   
+    		   rotacion= new JMenuItem("Operacion de rotacion");
+    		   menu.add(rotacion);
+    		   rotacion.addActionListener(this);
 
     	   }
 
-		@SuppressWarnings("deprecation")
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == abrir){
@@ -426,8 +461,23 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 			else if(e.getSource() == cerrar) {
 				System.exit(0);
 			}
+			
+			// -----Op. Geom
+			
+			else if(e.getSource() == evertical){
+				((FrameInterno)(panel.getSelectedFrame())).getImg().espejoVertical();
+				((FrameInterno)(panel.getSelectedFrame())).actualize();
+			}
+			
+			else if(e.getSource() == ehorizontal){
+				((FrameInterno)(panel.getSelectedFrame())).getImg().espejoHorizontal();
+				((FrameInterno)(panel.getSelectedFrame())).actualize();
+			}
+			
 		}
+		
        }
+       
 
        @SuppressWarnings("unused")
 	MenuDemo menu = new MenuDemo();

@@ -631,4 +631,40 @@ public class Imagen {
 	public void setTam(int[] tam) {
 		this.tam = tam;
 	}
+	
+	// -------------OPERACIONES GEOMETRICAS-----------------//
+	
+	public void espejoVertical(){
+		int[] espejo = new int[tam[0]*tam[1]];
+		Color valor;
+		for( int i = 0; i < getImageActual().getWidth(); i++ ){
+            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+                espejo[(getImageActual().getHeight()-1-j)*getTam()[0]+i]=getGris(i,j);
+            }
+        }
+		for( int i = 0; i < getImageActual().getWidth(); i++ ){
+            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+            	valor = new Color(espejo[j*getTam()[0]+i],espejo[j*getTam()[0]+i],espejo[j*getTam()[0]+i]);
+            	getImageActual().setRGB(i, j, valor.getRGB());
+            }
+        }
+		escalaGrises();
+	}
+	
+	public void espejoHorizontal(){
+		int[] espejo = new int[tam[0]*tam[1]];
+		Color valor;
+		for( int i = 0; i < getImageActual().getWidth(); i++ ){
+            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+                espejo[j*getTam()[0]+(getImageActual().getWidth()-1-i)]=getGris(i,j);
+            }
+        }
+		for( int i = 0; i < getImageActual().getWidth(); i++ ){
+            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+            	valor = new Color(espejo[j*getTam()[0]+i],espejo[j*getTam()[0]+i],espejo[j*getTam()[0]+i]);
+            	getImageActual().setRGB(i, j, valor.getRGB());
+            }
+        }
+		escalaGrises();
+	}
 }
