@@ -474,6 +474,11 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
 			
+			else if(e.getSource() == trasp){
+				((FrameInterno)(panel.getSelectedFrame())).getImg().traspuesta();
+				((FrameInterno)(panel.getSelectedFrame())).actualize();
+			}
+			
 		}
 		
        }

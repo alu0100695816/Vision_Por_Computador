@@ -667,4 +667,25 @@ public class Imagen {
         }
 		escalaGrises();
 	}
+	
+	public void traspuesta(){
+		int[] espejo = new int[tam[0]*tam[1]];
+		Color valor;
+		BufferedImage im = new BufferedImage(tam[1], tam[0], BufferedImage.TYPE_INT_RGB);
+		for( int i = 0; i < getImageActual().getWidth(); i++ ){
+            for( int j = 0; j < getImageActual().getHeight(); j++ ){
+                espejo[i*getTam()[1]+j]=getGris(i,j);
+            }
+        }
+		for( int i = 0; i < getImageActual().getHeight(); i++ ){
+            for( int j = 0; j < getImageActual().getWidth(); j++ ){
+            	valor = new Color(espejo[j*getTam()[1]+i],espejo[j*getTam()[1]+i],espejo[j*getTam()[1]+i]);
+            	im.setRGB(i, j, valor.getRGB());
+            }
+        }
+		int[] tama = {tam[1],tam[0]};
+		this.setImageActual(im);
+		this.setTam(tama);
+		escalaGrises();
+	}
 }
