@@ -479,6 +479,25 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
 			
+			else if(e.getSource() == rotIzq) {
+				double mult;
+				do{
+					mult = Float.parseFloat(JOptionPane.showInputDialog("Multiplo de 90 a rotar:"));
+					if(mult%90 != 0) JOptionPane.showMessageDialog(panel, "Error: " + mult + " no es multiplo de 90!");
+				}while(mult%90 != 0);
+				((FrameInterno)(panel.getSelectedFrame())).getImg().rotacion(0, mult);	
+				((FrameInterno)(panel.getSelectedFrame())).actualize();
+			}
+			
+			else if(e.getSource() == rotDer) {
+				double mult;
+				do{
+					mult = Float.parseFloat(JOptionPane.showInputDialog("Multiplo de 90 a rotar:"));
+					if(mult%90 != 0) JOptionPane.showMessageDialog(panel, "Error: " + mult + " no es multiplo de 90!");
+				}while(mult%90 != 0);
+				((FrameInterno)(panel.getSelectedFrame())).getImg().rotacion(1, mult);	
+				((FrameInterno)(panel.getSelectedFrame())).actualize();
+			}
 		}
 		
        }

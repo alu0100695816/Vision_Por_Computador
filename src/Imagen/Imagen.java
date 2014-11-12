@@ -688,4 +688,69 @@ public class Imagen {
 		this.setTam(tama);
 		escalaGrises();
 	}
+	
+	public void rot90(boolean d){
+		int[] espejo = new int[tam[0]*tam[1]];
+		Color valor;
+		BufferedImage im = new BufferedImage(tam[1], tam[0], BufferedImage.TYPE_INT_RGB);
+		if(d){ // Derecha 
+			for( int i = 0; i < getImageActual().getWidth(); i++ ){
+				for( int j = 0; j < getImageActual().getHeight(); j++ ){
+					espejo[i*getTam()[1]+(getImageActual().getHeight()-1-j)]=getGris(i,j);
+				}
+			}
+			for( int i = 0; i < getImageActual().getHeight(); i++ ){
+				for( int j = 0; j < getImageActual().getWidth(); j++ ){
+					valor = new Color(espejo[j*getTam()[1]+i],espejo[j*getTam()[1]+i],espejo[j*getTam()[1]+i]);
+					im.setRGB(i, j, valor.getRGB());
+				}
+			}
+		}
+		else{ // Izquierda 
+			for( int i = 0; i < getImageActual().getWidth(); i++ ){
+				for( int j = 0; j < getImageActual().getHeight(); j++ ){
+					espejo[(getImageActual().getWidth()-1-i)*getTam()[1]+j]=getGris(i,j);
+				}
+			}
+			for( int i = 0; i < getImageActual().getHeight(); i++ ){
+				for( int j = 0; j < getImageActual().getWidth(); j++ ){
+					valor = new Color(espejo[j*getTam()[1]+i],espejo[j*getTam()[1]+i],espejo[j*getTam()[1]+i]);
+					im.setRGB(i, j, valor.getRGB());
+				}
+			}
+		}
+		int[] tama = {tam[1],tam[0]};
+		this.setImageActual(im);
+		this.setTam(tama);
+		escalaGrises();
+	}
+
+	public void rotacion(int i, double mult) {
+		if(i == 0){ //Izquierda
+			if(mult%270 == 0){
+				rot90(false); rot90(false); rot90(false);
+			}
+			
+			else if(mult%180 == 0){
+				rot90(false); rot90(false);
+			}
+			
+			else if(mult%90 == 0){
+				rot90(false);
+			}
+		}
+		else if(i == 1){ //Derecha
+			if(mult%270 == 0){
+				rot90(true); rot90(true); rot90(true);
+			}
+			
+			else if(mult%180 == 0){
+				rot90(true); rot90(true);
+			}
+			
+			else if(mult%90 == 0){
+				rot90(true);
+			}
+		}
+	}
 }
