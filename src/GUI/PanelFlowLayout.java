@@ -498,6 +498,14 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				((FrameInterno)(panel.getSelectedFrame())).getImg().rotacion(1, mult);	
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
+			
+			else if(e.getSource() == escalado) {
+				int tamH, tamV;
+				tamH = Integer.parseInt(JOptionPane.showInputDialog("Tamaño horizontal de la imagen: " + ((FrameInterno)(panel.getSelectedFrame())).getImg().getTam()[0] + "px. Introduzca el nuevo tamaño horizontal:"));
+				tamV = Integer.parseInt(JOptionPane.showInputDialog("Tamaño vertical de la imagen: " + ((FrameInterno)(panel.getSelectedFrame())).getImg().getTam()[1] + "px. Introduzca el nuevo tamaño vertical:"));
+				((FrameInterno)(panel.getSelectedFrame())).getImg().escalado(tamH,tamV);	
+				((FrameInterno)(panel.getSelectedFrame())).actualize();
+			}
 		}
 		
        }

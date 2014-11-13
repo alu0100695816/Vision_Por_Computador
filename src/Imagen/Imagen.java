@@ -720,8 +720,8 @@ public class Imagen {
 			}
 		}
 		int[] tama = {tam[1],tam[0]};
-		this.setImageActual(im);
 		this.setTam(tama);
+		this.setImageActual(im);
 		escalaGrises();
 	}
 
@@ -752,5 +752,29 @@ public class Imagen {
 				rot90(true);
 			}
 		}
+	}
+	
+	public void escalado(int horizontal, int vertical){
+		BufferedImage bi = new BufferedImage(horizontal, vertical, BufferedImage.TYPE_INT_RGB);
+		double horizontalD = horizontal;
+		double verticalD = vertical;
+		double desfaseH = horizontalD/tam[0];
+		double desfaseV = verticalD/tam[1];
+		for( int i = 0; i < horizontal; i++ ){
+			for( int j = 0; j < vertical; j++ ){
+				vecinoMasProximo(bi,i,j,desfaseH,desfaseV);
+			}
+		}
+		int[] tama = {horizontal,vertical};
+		this.setTam(tama);
+		this.setImageActual(bi);
+		nivelGris = new int[getTam()[0]*getTam()[1]];
+		escalaGrises();
+	}
+	
+	public void vecinoMasProximo(BufferedImage im, int x, int y, double desfaseH, double desfaseV){
+		int x2 = (int) Math.round(x/desfaseH); if (x2 > tam[0]-1) x2 = tam[0]-1; if (x2 < 0) x2 = 0;
+		int y2 = (int) Math.round(y/desfaseV); if (y2 > tam[1]-1) y2 = tam[1]-1; if (y2 < 0) y2 = 0;
+		im.setRGB(x, y, getImageActual().getRGB(x2, y2));
 	}
 }
