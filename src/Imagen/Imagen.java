@@ -754,7 +754,7 @@ public class Imagen {
 		}
 	}
 	
-	public void escalado(int horizontal, int vertical){
+	public void escalado(boolean vecino, int horizontal, int vertical){
 		BufferedImage bi = new BufferedImage(horizontal, vertical, BufferedImage.TYPE_INT_RGB);
 		double horizontalD = horizontal;
 		double verticalD = vertical;
@@ -762,7 +762,8 @@ public class Imagen {
 		double desfaseV = verticalD/tam[1];
 		for( int i = 0; i < horizontal; i++ ){
 			for( int j = 0; j < vertical; j++ ){
-				vecinoMasProximo(bi,i,j,desfaseH,desfaseV);
+				if(vecino) vecinoMasProximo(bi,i,j,desfaseH,desfaseV);
+				else bilineal(bi,i,j,desfaseH,desfaseV);
 			}
 		}
 		int[] tama = {horizontal,vertical};
@@ -771,10 +772,26 @@ public class Imagen {
 		nivelGris = new int[getTam()[0]*getTam()[1]];
 		escalaGrises();
 	}
-	
+
 	public void vecinoMasProximo(BufferedImage im, int x, int y, double desfaseH, double desfaseV){
 		int x2 = (int) Math.round(x/desfaseH); if (x2 > tam[0]-1) x2 = tam[0]-1; if (x2 < 0) x2 = 0;
 		int y2 = (int) Math.round(y/desfaseV); if (y2 > tam[1]-1) y2 = tam[1]-1; if (y2 < 0) y2 = 0;
 		im.setRGB(x, y, getImageActual().getRGB(x2, y2));
+	}
+	
+	public void bilineal(BufferedImage im, int x, int y, double desfaseH, double desfaseV) {
+		int x1 = (int) (x/desfaseH);
+		int x2 = x1+1; if (x2 > tam[0]-1) x2 = x1;
+		int y1 = (int) (y/desfaseV);
+		int y2 = y1+1; if (y2 > tam[1]-1) y2 = y1;	
+		double p = x/desfaseH - x1; if (x2 == x1);
+		double q = y/desfaseV - y1;
+		int A = (new Color(getImageActual().getRGB(x1, y2))).getRed();
+		int B = (new Color(getImageActual().getRGB(x2, y2))).getRed();
+		int C = (new Color(getImageActual().getRGB(x1, y1))).getRed();
+		int D = (new Color(getImageActual().getRGB(x2, y1))).getRed();
+		int P = (int) Math.round((C + (D-C)*p + (A-C)*q + (B+C-A-D)*p*q));
+		Color valor = new Color(P,P,P);
+		im.setRGB(x, y, valor.getRGB());
 	}
 }
