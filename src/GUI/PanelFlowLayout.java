@@ -24,7 +24,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, gris, info, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm, tramos, mapacamb, evertical, ehorizontal, trasp, rotDer, rotIzq, escalado, rotacion;
+    private JMenuItem abrir, gris, info, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm, tramos, mapacamb, evertical, ehorizontal, trasp, rotAbs, rotDer, rotIzq, escalado, rotacion;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -143,24 +143,22 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   trasp.addActionListener(this);
     		   
     		   
-    		   rotIzq= new JMenuItem("Rotacion a la izquierda");
+    		   rotIzq= new JMenuItem("Rotacion a la izquierda (Multiplos 90)");
     		   menu.add(rotIzq);
     		   rotIzq.addActionListener(this);
     		   
     		   
-    		   rotDer= new JMenuItem("Rotacion a la derecha");
+    		   rotDer= new JMenuItem("Rotacion (Múltiplos de 90)");
     		   menu.add(rotDer);
     		   rotDer.addActionListener(this);
     		   
+    		   rotAbs= new JMenuItem("Rotacion Absoluta");
+    		   menu.add(rotAbs);
+    		   rotAbs.addActionListener(this);
     		   
     		   escalado= new JMenuItem("Operacion de escalado");
     		   menu.add(escalado);
     		   escalado.addActionListener(this);
-    		   
-    		   
-    		   rotacion= new JMenuItem("Operacion de rotacion");
-    		   menu.add(rotacion);
-    		   rotacion.addActionListener(this);
 
     	   }
 
@@ -478,25 +476,25 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				((FrameInterno)(panel.getSelectedFrame())).getImg().traspuesta();
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
-			
-			else if(e.getSource() == rotIzq) {
-				double mult;
-				do{
-					mult = Float.parseFloat(JOptionPane.showInputDialog("Multiplo de 90 a rotar:"));
-					if(mult%90 != 0) JOptionPane.showMessageDialog(panel, "Error: " + mult + " no es multiplo de 90!");
-				}while(mult%90 != 0);
-				((FrameInterno)(panel.getSelectedFrame())).getImg().rotacion(0, mult);	
-				((FrameInterno)(panel.getSelectedFrame())).actualize();
-			}
-			
 			else if(e.getSource() == rotDer) {
 				double mult;
+				String opcion;
+				do{
+					opcion = JOptionPane.showInputDialog("Rotar a izquierda (i) o derecha (d)");
+					if(opcion.equals("d") && opcion.equals("derecha") && opcion.equals("i") && opcion.equals("izquierda")) JOptionPane.showMessageDialog(panel, "Error: introduce \"d\", \"derecha\", \"i\" o \"izquierda\"");
+				}while(opcion.equals("d") && opcion.equals("derecha") && opcion.equals("i") && opcion.equals("izquierda"));
 				do{
 					mult = Float.parseFloat(JOptionPane.showInputDialog("Multiplo de 90 a rotar:"));
 					if(mult%90 != 0) JOptionPane.showMessageDialog(panel, "Error: " + mult + " no es multiplo de 90!");
 				}while(mult%90 != 0);
-				((FrameInterno)(panel.getSelectedFrame())).getImg().rotacion(1, mult);	
-				((FrameInterno)(panel.getSelectedFrame())).actualize();
+				if(opcion.equals("d") || opcion.equals("derecha")) {
+					((FrameInterno)(panel.getSelectedFrame())).getImg().rotacion(1, mult);	
+					((FrameInterno)(panel.getSelectedFrame())).actualize();
+				}
+				else {
+					((FrameInterno)(panel.getSelectedFrame())).getImg().rotacion(0, mult);	
+					((FrameInterno)(panel.getSelectedFrame())).actualize();
+				}
 			}
 			
 			else if(e.getSource() == escalado) {
@@ -507,6 +505,31 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				int vecino = JOptionPane.showOptionDialog(panel, "Seleccione el metodo", "Seleccionar", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opciones, "Vecino mas proximo");
 				if(vecino == 0)((FrameInterno)(panel.getSelectedFrame())).getImg().escalado(true,tamH,tamV);	
 				else if(vecino == 1)((FrameInterno)(panel.getSelectedFrame())).getImg().escalado(false,tamH,tamV);	
+				((FrameInterno)(panel.getSelectedFrame())).actualize();
+			}
+			else if(e.getSource() == rotAbs) {
+				double angulo;
+				String opcion;
+				int interpolacion;
+				do{
+					opcion = JOptionPane.showInputDialog("Rotar a izquierda (i) o derecha (d)");
+					if(opcion.equals("d") && opcion.equals("derecha") && opcion.equals("i") && opcion.equals("izquierda")) JOptionPane.showMessageDialog(panel, "Error: introduce \"d\", \"derecha\", \"i\" o \"izquierda\"");
+				}while(opcion.equals("d") && opcion.equals("derecha") && opcion.equals("i") && opcion.equals("izquierda"));
+				do{
+					angulo = Integer.parseInt(JOptionPane.showInputDialog("Ángulo a rotar:"));
+					if(angulo < 0 || angulo > 359) JOptionPane.showMessageDialog(panel, "Error: Introduce un ángulo entre 0 y 359");
+				}while(angulo < 0 || angulo > 359);
+				do{
+					interpolacion = Integer.parseInt(JOptionPane.showInputDialog("0: Interpolación por Vecino Más Próximo\n1: Interpolación Bilineal"));
+					if(interpolacion != 0 && interpolacion != 1) JOptionPane.showMessageDialog(panel, "Error: Introduce un ángulo entre 0 y 359");
+				}while(interpolacion != 0 && interpolacion != 1);
+				boolean finalOpcion, finalInterpolacion;
+				if(opcion.equals("d") || opcion.equals("derecha")) finalOpcion = false;
+				else finalOpcion = true;
+				if(interpolacion == 0) finalInterpolacion = false;
+				else finalInterpolacion = true;
+				
+				((FrameInterno)(panel.getSelectedFrame())).getImg().rotacionAbsoluta(finalOpcion, angulo, finalInterpolacion);
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
 		}

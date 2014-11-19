@@ -8,6 +8,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import GUI.FrameInterno;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -774,8 +775,16 @@ public class Imagen {
 	}
 
 	public void vecinoMasProximo(BufferedImage im, int x, int y, double desfaseH, double desfaseV){
-		int x2 = (int) Math.round(x/desfaseH); if (x2 > tam[0]-1) x2 = tam[0]-1; if (x2 < 0) x2 = 0;
-		int y2 = (int) Math.round(y/desfaseV); if (y2 > tam[1]-1) y2 = tam[1]-1; if (y2 < 0) y2 = 0;
+		int x2, y2;
+		
+		if(desfaseH == 0) x2 = x;
+		else x2 = (int) Math.round(x/desfaseH); 
+		if (x2 > tam[0]-1) x2 = tam[0]-1; if (x2 < 0) x2 = 0;
+		
+		if(desfaseV == 0) y2 = y;
+		else y2 = (int) Math.round(y/desfaseV); 
+		if (y2 > tam[1]-1) y2 = tam[1]-1; if (y2 < 0) y2 = 0;
+		
 		im.setRGB(x, y, getImageActual().getRGB(x2, y2));
 	}
 	
@@ -793,5 +802,72 @@ public class Imagen {
 		int P = (int) Math.round((C + (D-C)*p + (A-C)*q + (B+C-A-D)*p*q));
 		Color valor = new Color(P,P,P);
 		im.setRGB(x, y, valor.getRGB());
+	}
+	
+	public void rotacionAbsoluta(boolean i, double angulo, boolean opcion) {
+		double[] E = new double[2]; E[0] = 0; E[1] = 0;
+		double[] F = new double[2]; F[0] = getImageActual().getWidth(); F[1] = 0;
+		double[] G = new double[2]; G[0] = getImageActual().getWidth(); G[1] = getImageActual().getHeight();
+		double[] H = new double[2]; H[0] = 0; H[1] = getImageActual().getHeight();
+		
+		if(!i) angulo = -angulo;
+		
+		double[][] rotMatrix = new double[2][2];
+		rotMatrix[0][0] = rotMatrix[1][1]= Math.cos(angulo*(Math.PI/180));
+		rotMatrix[0][1] = -(Math.sin(angulo*(Math.PI/180)));
+		rotMatrix[1][0] = Math.sin(angulo*(Math.PI/180));
+		
+		double[][] invRotMatrix = rotMatrix;
+		rotMatrix[0][1] = Math.sin(angulo*(Math.PI/180));
+		rotMatrix[1][0] = -(Math.sin(angulo*(Math.PI/180)));
+		
+		double[] newF = multMatriz(F,rotMatrix);
+		double[] newG = multMatriz(G,rotMatrix);
+		double[] newH = multMatriz(H,rotMatrix);
+		
+		double[] newO = new double[2];
+		newO[0] = Math.min(Math.min(E[0], newF[0]),Math.min(newG[0], newH[0]));
+		newO[1] = Math.max(Math.max(E[1], newF[1]),Math.max(newG[1], newH[1]));
+		
+		int[] paralelogramo = new int[2];
+		paralelogramo[0] = (int)Math.round(Math.abs(Math.max(Math.max(E[0],newF[0]),Math.max(newG[0],newH[0])) - Math.min(Math.min(E[0],newF[0]),Math.min(newG[0],newH[0]))));
+		paralelogramo[1] = (int)Math.round(Math.abs(Math.max(Math.max(E[1],newF[1]),Math.max(newG[1],newH[1])) - Math.min(Math.min(E[1],newF[1]),Math.min(newG[1],newH[1]))));
+		
+		BufferedImage img = new BufferedImage((int) Math.round(paralelogramo[0]), (int) Math.round(paralelogramo[1]), BufferedImage.TYPE_INT_RGB);
+		for(int x = 0; x < paralelogramo[0]; x++) {
+			for(int y = 0; y < paralelogramo[1]; y++) {
+				
+				double[] coordOrig = new double[2];
+				double[] sumaCoord = new double[2];
+				sumaCoord[0] = x+newO[0];
+				sumaCoord[1] = y+newO[1];
+				coordOrig = multMatriz(sumaCoord,invRotMatrix);
+				int[] intCoordOrig = new int[2];
+				intCoordOrig[0] = (int)(Math.round(coordOrig[0]));
+				intCoordOrig[1] = (int)(Math.round(coordOrig[1]));
+				
+				if(intCoordOrig[0] < 0 || intCoordOrig[0] > getImageActual().getWidth() || intCoordOrig[1] < 0 || intCoordOrig[1] > getImageActual().getHeight()) {
+					Color valor = new Color(255,255,255);
+					img.setRGB(x, y, valor.getRGB());
+				}
+				else {
+					if(!opcion) vecinoMasProximo(img,intCoordOrig[0],intCoordOrig[1],0,0);
+					else bilineal(img,intCoordOrig[0],intCoordOrig[1],0,0);
+				}
+			}
+		}
+		this.setTam(paralelogramo);
+		this.setImageActual(img);
+		nivelGris = new int[getTam()[0]*getTam()[1]];
+		escalaGrises();
+	}
+	
+	public double[] multMatriz(double[] coord, double[][] rotMatrix) {
+		double xCoord = (rotMatrix[0][0]*coord[0]) + (rotMatrix[0][1]*coord[1]);
+		double yCoord = (rotMatrix[1][0]*coord[0]) + (rotMatrix[1][1]*coord[1]);
+		double[] result = new double[2];
+		result[0] = xCoord;
+		result[1] = yCoord;
+		return result;
 	}
 }
