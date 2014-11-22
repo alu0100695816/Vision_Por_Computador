@@ -776,23 +776,21 @@ public class Imagen {
 
 	public void vecinoMasProximo(BufferedImage im, int x, int y, double desfaseH, double desfaseV){
 		int x2, y2;
-		
-		if(desfaseH == 0) x2 = x;
-		else x2 = (int) Math.round(x/desfaseH); 
+		x2 = (int) Math.round(x/desfaseH); 
 		if (x2 > tam[0]-1) x2 = tam[0]-1; if (x2 < 0) x2 = 0;
-		
-		if(desfaseV == 0) y2 = y;
-		else y2 = (int) Math.round(y/desfaseV); 
+		y2 = (int) Math.round(y/desfaseV); 
 		if (y2 > tam[1]-1) y2 = tam[1]-1; if (y2 < 0) y2 = 0;
 		
 		im.setRGB(x, y, getImageActual().getRGB(x2, y2));
 	}
 	
 	public void bilineal(BufferedImage im, int x, int y, double desfaseH, double desfaseV) {
-		int x1 = (int) (x/desfaseH);
+		int x1, y1;
+		x1 = (int) (x/desfaseH);
 		int x2 = x1+1; if (x2 > tam[0]-1) x2 = x1;
-		int y1 = (int) (y/desfaseV);
+		y1 = (int) (y/desfaseV);
 		int y2 = y1+1; if (y2 > tam[1]-1) y2 = y1;	
+		
 		double p = x/desfaseH - x1; if (x2 == x1);
 		double q = y/desfaseV - y1;
 		int A = (new Color(getImageActual().getRGB(x1, y2))).getRed();
@@ -810,58 +808,29 @@ public class Imagen {
 		double[] G = new double[2]; G[0] = getImageActual().getWidth(); G[1] = getImageActual().getHeight();
 		double[] H = new double[2]; H[0] = 0; H[1] = getImageActual().getHeight();
 		
-		System.out.println("E:("+E[0]+","+E[1]+")");
-		System.out.println("F:("+F[0]+","+F[1]+")");
-		System.out.println("G:("+G[0]+","+G[1]+")");
-		System.out.println("H:("+H[0]+","+H[1]+")");
-		
-		if(!i) angulo = -angulo;
-		
-		System.out.println();
-		System.out.println("Ángulo: "+angulo);
+		if(i) angulo = -angulo;
 		
 		double[][] rotMatrix = new double[2][2];
 		rotMatrix[0][0] = rotMatrix[1][1]= Math.cos(angulo*(Math.PI/180));
 		rotMatrix[0][1] = -(Math.sin(angulo*(Math.PI/180)));
 		rotMatrix[1][0] = Math.sin(angulo*(Math.PI/180));
 		
-		System.out.println();
-		System.out.println("Matriz de Rotación:");
-		System.out.println("["+rotMatrix[0][0]+","+rotMatrix[0][1]+"]");
-		System.out.println("["+rotMatrix[1][0]+","+rotMatrix[1][1]+"]");
-		
 		double[][] invRotMatrix = new double[2][2];
 		invRotMatrix[0][0] = invRotMatrix[1][1] = Math.cos(angulo*(Math.PI/180));
 		invRotMatrix[0][1] = Math.sin(angulo*(Math.PI/180));
 		invRotMatrix[1][0] = -(Math.sin(angulo*(Math.PI/180)));
 		
-		System.out.println();
-		System.out.println("Matriz de Rotación Inversa:");
-		System.out.println("["+invRotMatrix[0][0]+","+invRotMatrix[0][1]+"]");
-		System.out.println("["+invRotMatrix[1][0]+","+invRotMatrix[1][1]+"]");
-		
 		double[] newF = multMatriz(F,rotMatrix);
 		double[] newG = multMatriz(G,rotMatrix);
 		double[] newH = multMatriz(H,rotMatrix);
 		
-		System.out.println();
-		System.out.println("newF:("+newF[0]+","+newF[1]+")");
-		System.out.println("newG:("+newG[0]+","+newG[1]+")");
-		System.out.println("newH:("+newH[0]+","+newH[1]+")");
-		
 		double[] newO = new double[2];
 		newO[0] = Math.min(Math.min(E[0], newF[0]),Math.min(newG[0], newH[0]));
-		newO[1] = Math.max(Math.max(E[1], newF[1]),Math.max(newG[1], newH[1]));
-		
-		System.out.println();
-		System.out.println("newO:("+newO[0]+","+newO[1]+")");
+		newO[1] = Math.min(Math.min(E[1], newF[1]),Math.min(newG[1], newH[1]));
 		
 		int[] paralelogramo = new int[2];
 		paralelogramo[0] = (int)Math.ceil(Math.abs(Math.max(Math.max(E[0],newF[0]),Math.max(newG[0],newH[0])) - Math.min(Math.min(E[0],newF[0]),Math.min(newG[0],newH[0]))));
 		paralelogramo[1] = (int)Math.ceil(Math.abs(Math.max(Math.max(E[1],newF[1]),Math.max(newG[1],newH[1])) - Math.min(Math.min(E[1],newF[1]),Math.min(newG[1],newH[1]))));
-		
-		System.out.println();
-		System.out.println("Paralelogramo:("+paralelogramo[0]+","+paralelogramo[1]+")");
 		
 		BufferedImage img = new BufferedImage(paralelogramo[0], paralelogramo[1], BufferedImage.TYPE_INT_RGB);
 		for(int x = 0; x < paralelogramo[0]; x++) {
@@ -872,13 +841,11 @@ public class Imagen {
 				
 				sumaCoord[0] = x+newO[0];
 				sumaCoord[1] = y+newO[1];
-				//System.out.println("SumaCoord:("+sumaCoord[0]+","+sumaCoord[1]+")");
 				
 				coordOrig = multMatriz(sumaCoord,invRotMatrix);
 				int[] intCoordOrig = new int[2];
 				intCoordOrig[0] = (int)(Math.round(coordOrig[0]));
 				intCoordOrig[1] = (int)(Math.round(coordOrig[1]));
-				//System.out.println("intCoordOrig:("+intCoordOrig[0]+","+intCoordOrig[1]+")");
 				
 				if(intCoordOrig[0] < 0 || intCoordOrig[0] > getImageActual().getWidth()-1 || intCoordOrig[1] < 0 || intCoordOrig[1] > getImageActual().getHeight()-1) {
 					Color valor = new Color(255,255,255);
@@ -886,7 +853,7 @@ public class Imagen {
 				}
 				else {
 					if(!opcion) img.setRGB(x, y, getImageActual().getRGB(intCoordOrig[0], intCoordOrig[1]));
-					else bilineal(img,intCoordOrig[0],intCoordOrig[1],0,0);
+					else img.setRGB(x, y, getImageActual().getRGB(intCoordOrig[0], intCoordOrig[1]));
 				}
 			}
 		}

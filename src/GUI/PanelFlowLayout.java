@@ -132,21 +132,13 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   menu.add(evertical);
     		   evertical.addActionListener(this);
     		   
-    		   
     		   ehorizontal= new JMenuItem("Espejo Horizontal");
     		   menu.add(ehorizontal);
     		   ehorizontal.addActionListener(this);
     		   
-    		   
     		   trasp= new JMenuItem("Traspuesta");
     		   menu.add(trasp);
     		   trasp.addActionListener(this);
-    		   
-    		   
-    		   rotIzq= new JMenuItem("Rotacion a la izquierda (Multiplos 90)");
-    		   menu.add(rotIzq);
-    		   rotIzq.addActionListener(this);
-    		   
     		   
     		   rotDer= new JMenuItem("Rotacion (Múltiplos de 90)");
     		   menu.add(rotDer);
@@ -511,23 +503,25 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				double angulo;
 				String opcion;
 				int interpolacion;
+				String[] opciones = {"Vecino mas proximo", "Bilineal"};
+				
 				do{
 					opcion = JOptionPane.showInputDialog("Rotar a izquierda (i) o derecha (d)");
 					if(opcion.equals("d") && opcion.equals("derecha") && opcion.equals("i") && opcion.equals("izquierda")) JOptionPane.showMessageDialog(panel, "Error: introduce \"d\", \"derecha\", \"i\" o \"izquierda\"");
 				}while(opcion.equals("d") && opcion.equals("derecha") && opcion.equals("i") && opcion.equals("izquierda"));
+				
 				do{
 					angulo = Integer.parseInt(JOptionPane.showInputDialog("Ángulo a rotar:"));
 					if(angulo < 0 || angulo > 359) JOptionPane.showMessageDialog(panel, "Error: Introduce un ángulo entre 0 y 359");
 				}while(angulo < 0 || angulo > 359);
-				do{
-					interpolacion = Integer.parseInt(JOptionPane.showInputDialog("0: Interpolación por Vecino Más Próximo\n1: Interpolación Bilineal"));
-					if(interpolacion != 0 && interpolacion != 1) JOptionPane.showMessageDialog(panel, "Error: Introduce un ángulo entre 0 y 359");
-				}while(interpolacion != 0 && interpolacion != 1);
+				
+				int vecino = JOptionPane.showOptionDialog(panel, "Seleccione el metodo", "Seleccionar", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opciones, "Vecino mas proximo");
 				boolean finalOpcion, finalInterpolacion;
+				
+				if (vecino == 0) finalInterpolacion = false;
+				else finalInterpolacion = false;
 				if(opcion.equals("d") || opcion.equals("derecha")) finalOpcion = false;
 				else finalOpcion = true;
-				if(interpolacion == 0) finalInterpolacion = false;
-				else finalInterpolacion = true;
 				
 				((FrameInterno)(panel.getSelectedFrame())).getImg().rotacionAbsoluta(finalOpcion, angulo, finalInterpolacion);
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
