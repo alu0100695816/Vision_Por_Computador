@@ -68,6 +68,10 @@ public class Imagen {
 		getTam()[1] = imageActual.getHeight();
 		nivelGris = new int[getTam()[0]*getTam()[1]];
 	}
+    
+    public Imagen clonar(){
+    	return new Imagen(deepCopy(getImageActual()));
+    }
 
 	//Método que devuelve una imagen abierta desde archivo
     //Retorna un objeto BufferedImagen
@@ -209,6 +213,7 @@ public class Imagen {
                 getImageActual().setRGB(x, y, valor.getRGB());
     		}
     	}
+		rellenarArrayGrises();
     }
 	
 	/*public void fillBothArrays() {

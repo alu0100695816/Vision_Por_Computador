@@ -14,6 +14,7 @@ import java.io.IOException;
 
 
 import java.awt.event.*;
+import java.beans.PropertyVetoException;
 
 
 public class PanelFlowLayout extends JFrame implements MouseListener {
@@ -140,7 +141,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   menu.add(trasp);
     		   trasp.addActionListener(this);
     		   
-    		   rotDer= new JMenuItem("Rotacion (Múltiplos de 90)");
+    		   rotDer= new JMenuItem("Rotacion (Mï¿½ltiplos de 90)");
     		   menu.add(rotDer);
     		   rotDer.addActionListener(this);
     		   
@@ -247,6 +248,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				panel.add(fi);
 			}
 			else if(e.getSource() == eqAc) {
+				clonar();
 				//Generamos el histograma
 				try {
 					((FrameInterno)(panel.getSelectedFrame())).getImg().generarHistogramaAc();
@@ -270,7 +272,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				panel.add(fi2);
 			}
 			else if(e.getSource() == bc) {
-				((FrameInterno)(panel.getSelectedFrame())).getImg().rellenarArrayGrises();
+				clonar();
 				JFrame frame = new JFrame("Brillo y Contraste");
 				JPanel pan = new JPanel();
 				final JSlider brillo = new JSlider(0, 255, (int) ((FrameInterno)(panel.getSelectedFrame())).getImg().getBrillo());
@@ -330,6 +332,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				}
 			}
 			else if(e.getSource() == espHist) {
+				clonar();
 				Imagen imAux = new Imagen();
 				try {
 					imAux.escalaGrises();
@@ -346,6 +349,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				
 			}
 			else if(e.getSource() == gamma) {
+				clonar();
 				double gamma = Float.parseFloat(JOptionPane.showInputDialog("Seleccione el indice gamma"));
 				((FrameInterno)(panel.getSelectedFrame())).getImg().correccionGamma(gamma);	
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
@@ -379,6 +383,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				
 			}
 			else if(e.getSource() == tramos) {
+				clonar();
 				int numTramos = (int)(Float.parseFloat(JOptionPane.showInputDialog("Indique el nï¿½mero de tramos(1-4):")));
 				while(numTramos < 1 || numTramos > 4) {
 					numTramos = (int)(Float.parseFloat(JOptionPane.showInputDialog("Error: solo entre 1 y 4 tramos. Introduzca de nuevo:")));
@@ -455,20 +460,24 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 			// -----Op. Geom
 			
 			else if(e.getSource() == evertical){
+				clonar();
 				((FrameInterno)(panel.getSelectedFrame())).getImg().espejoVertical();
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
 			
 			else if(e.getSource() == ehorizontal){
+				clonar();
 				((FrameInterno)(panel.getSelectedFrame())).getImg().espejoHorizontal();
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
 			
 			else if(e.getSource() == trasp){
+				clonar();
 				((FrameInterno)(panel.getSelectedFrame())).getImg().traspuesta();
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
 			else if(e.getSource() == rotDer) {
+				clonar();
 				double mult;
 				String opcion;
 				do{
@@ -490,6 +499,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 			}
 			
 			else if(e.getSource() == escalado) {
+				clonar();
 				int tamH, tamV;
 				String[] opciones = {"Vecino mas proximo", "Bilineal"};
 				tamH = Integer.parseInt(JOptionPane.showInputDialog("TamaÃ±o horizontal de la imagen: " + ((FrameInterno)(panel.getSelectedFrame())).getImg().getTam()[0] + "px. Introduzca el nuevo tamaÃ±o horizontal:"));
@@ -500,6 +510,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
 			else if(e.getSource() == rotAbs) {
+				clonar();
 				double angulo;
 				String opcion;
 				int interpolacion;
@@ -511,8 +522,8 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				}while(opcion.equals("d") && opcion.equals("derecha") && opcion.equals("i") && opcion.equals("izquierda"));
 				
 				do{
-					angulo = Integer.parseInt(JOptionPane.showInputDialog("Ángulo a rotar:"));
-					if(angulo < 0 || angulo > 359) JOptionPane.showMessageDialog(panel, "Error: Introduce un ángulo entre 0 y 359");
+					angulo = Integer.parseInt(JOptionPane.showInputDialog("ï¿½ngulo a rotar:"));
+					if(angulo < 0 || angulo > 359) JOptionPane.showMessageDialog(panel, "Error: Introduce un ï¿½ngulo entre 0 y 359");
 				}while(angulo < 0 || angulo > 359);
 				
 				int vecino = JOptionPane.showOptionDialog(panel, "Seleccione el metodo", "Seleccionar", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opciones, "Vecino mas proximo");
@@ -573,6 +584,18 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 		g.drawImage(biCut, 0, 0, null);
 
 		return newbiCut;
+	}
+	
+	public void clonar(){
+		FrameInterno fi = new FrameInterno(((FrameInterno)(panel.getSelectedFrame())).getImg().clonar());
+		panel.setVisible(true);
+		panel.add(fi);
+		try {
+			fi.setSelected(true);
+		} catch (PropertyVetoException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 	}
 
 }
