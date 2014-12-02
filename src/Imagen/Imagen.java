@@ -837,6 +837,9 @@ public class Imagen {
 		paralelogramo[0] = (int)Math.ceil(Math.abs(Math.max(Math.max(E[0],newF[0]),Math.max(newG[0],newH[0])) - Math.min(Math.min(E[0],newF[0]),Math.min(newG[0],newH[0]))));
 		paralelogramo[1] = (int)Math.ceil(Math.abs(Math.max(Math.max(E[1],newF[1]),Math.max(newG[1],newH[1])) - Math.min(Math.min(E[1],newF[1]),Math.min(newG[1],newH[1]))));
 		
+		int blancos = 0;
+		int[] newNivelGris = new int[paralelogramo[0]*paralelogramo[1]];
+		
 		BufferedImage img = new BufferedImage(paralelogramo[0], paralelogramo[1], BufferedImage.TYPE_INT_RGB);
 		for(int x = 0; x < paralelogramo[0]; x++) {
 			for(int y = 0; y < paralelogramo[1]; y++) {
@@ -855,23 +858,33 @@ public class Imagen {
 				if(intCoordOrig[0] < 0 || intCoordOrig[0] > getImageActual().getWidth()-1 || intCoordOrig[1] < 0 || intCoordOrig[1] > getImageActual().getHeight()-1) {
 					Color valor = new Color(255,255,255);
 					img.setRGB(x, y, valor.getRGB());
+					newNivelGris[y*paralelogramo[0]+x] = 255;
 				}
 				else {
 					if(!opcion) {
 						img.setRGB(x, y, rotVMP(coordOrig[0],coordOrig[1]));
+						newNivelGris[y*paralelogramo[0]+x] = rotVMP(coordOrig[0],coordOrig[1]);
+						if(rotVMP(coordOrig[0],coordOrig[1]) == 255) {
+							blancos++;
+						}
 					}
 					else {
 						img.setRGB(x, y, rotBilineal(coordOrig[0],coordOrig[1]));
+						newNivelGris[y*paralelogramo[0]+x] = rotBilineal(coordOrig[0],coordOrig[1]);
+						if(rotBilineal(coordOrig[0],coordOrig[1]) == 255) {
+							blancos++;
+						}
 					}
-					
 				}
 			}
 		}
 		
 		this.setTam(paralelogramo);
 		this.setImageActual(img);
-		nivelGris = new int[getTam()[0]*getTam()[1]];
+		nivelGris = newNivelGris;
 		escalaGrises();
+		this.arrayGrises[255] = blancos;
+		
 	}
 	
 	public double[] multMatriz(double[] coord, double[][] rotMatrix) {
