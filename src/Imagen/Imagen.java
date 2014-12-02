@@ -857,8 +857,13 @@ public class Imagen {
 					img.setRGB(x, y, valor.getRGB());
 				}
 				else {
-					if(!opcion) img.setRGB(x, y, getImageActual().getRGB(intCoordOrig[0], intCoordOrig[1]));
-					else img.setRGB(x, y, getImageActual().getRGB(intCoordOrig[0], intCoordOrig[1]));
+					if(!opcion) {
+						img.setRGB(x, y, rotVMP(coordOrig[0],coordOrig[1]));
+					}
+					else {
+						img.setRGB(x, y, rotBilineal(coordOrig[0],coordOrig[1]));
+					}
+					
 				}
 			}
 		}
@@ -876,5 +881,29 @@ public class Imagen {
 		result[0] = xCoord;
 		result[1] = yCoord;
 		return result;
+	}
+	
+	public int rotVMP(double x, double y) {
+		int x1 = (int) Math.round(x);
+		int y1 = (int) Math.round(y);
+		return getImageActual().getRGB(x1, y1);
+	}
+	
+	public int rotBilineal(double x, double y) {
+		int x1, x2, y1, y2;
+		x1 = (int) Math.floor(x); if(x1 < 0) x1 = 0;
+		x2 = x1+1; if(x2 > 0) x2 = x1;
+		y1 = (int) Math.floor(y); if(y1 < 0) y1 = 0;
+		y2 = y1+1; y2 = y1;
+		
+		double p = x-x1;
+		double q = y-y1;
+		int A = (new Color(getImageActual().getRGB(x1, y2))).getRed();
+		int B = (new Color(getImageActual().getRGB(x2, y2))).getRed();
+		int C = (new Color(getImageActual().getRGB(x1, y1))).getRed();
+		int D = (new Color(getImageActual().getRGB(x2, y1))).getRed();
+		int P = (int) Math.round((C + (D-C)*p + (A-C)*q + (B+C-A-D)*p*q));
+		
+		return P;
 	}
 }
