@@ -869,7 +869,8 @@ public class Imagen {
 						}
 					}
 					else {
-						img.setRGB(x, y, rotBilineal(coordOrig[0],coordOrig[1]));
+						Color valor = new Color(rotBilineal(coordOrig[0],coordOrig[1]),rotBilineal(coordOrig[0],coordOrig[1]),rotBilineal(coordOrig[0],coordOrig[1]));
+						img.setRGB(x, y, valor.getRGB());
 						newNivelGris[y*paralelogramo[0]+x] = rotBilineal(coordOrig[0],coordOrig[1]);
 						if(rotBilineal(coordOrig[0],coordOrig[1]) == 255) {
 							blancos++;
@@ -884,6 +885,7 @@ public class Imagen {
 		nivelGris = newNivelGris;
 		escalaGrises();
 		this.arrayGrises[255] = blancos;
+		this.fillArrayGrisesAcumulativo();
 		
 	}
 	
@@ -904,10 +906,10 @@ public class Imagen {
 	
 	public int rotBilineal(double x, double y) {
 		int x1, x2, y1, y2;
-		x1 = (int) Math.floor(x); if(x1 < 0) x1 = 0;
-		x2 = x1+1; if(x2 > 0) x2 = x1;
-		y1 = (int) Math.floor(y); if(y1 < 0) y1 = 0;
-		y2 = y1+1; y2 = y1;
+		x1 = (int) x; if(x1 < 0) x1 = 0;
+		x2 = x1+1; if(x2 > getImageActual().getWidth()-1) x2 = x1;
+		y1 = (int) y; if(y1 < 0) y1 = 0;
+		y2 = y1+1; if(y2 > getImageActual().getHeight()-1) y2 = y1;
 		
 		double p = x-x1;
 		double q = y-y1;

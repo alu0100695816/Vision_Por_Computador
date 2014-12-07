@@ -530,7 +530,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				boolean finalOpcion, finalInterpolacion;
 				
 				if (vecino == 0) finalInterpolacion = false;
-				else finalInterpolacion = false;
+				else finalInterpolacion = true;
 				if(opcion.equals("d") || opcion.equals("derecha")) finalOpcion = false;
 				else finalOpcion = true;
 				
