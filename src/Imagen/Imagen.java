@@ -889,6 +889,75 @@ public class Imagen {
 		
 	}
 	
+	public void rotacionDirecta(boolean i, double angulo) {
+		double[] E = new double[2]; E[0] = 0; E[1] = 0;
+		double[] F = new double[2]; F[0] = getImageActual().getWidth(); F[1] = 0;
+		double[] G = new double[2]; G[0] = getImageActual().getWidth(); G[1] = getImageActual().getHeight();
+		double[] H = new double[2]; H[0] = 0; H[1] = getImageActual().getHeight();
+		
+		if(i) angulo = -angulo;
+		
+		double[][] rotMatrix = new double[2][2];
+		rotMatrix[0][0] = rotMatrix[1][1] = Math.cos(angulo*(Math.PI/180));
+		rotMatrix[0][1] = -(Math.sin(angulo*(Math.PI/180)));
+		rotMatrix[1][0] = Math.sin(angulo*(Math.PI/180));
+		
+		double[] newF = multMatriz(F,rotMatrix);
+		double[] newG = multMatriz(G,rotMatrix);
+		double[] newH = multMatriz(H,rotMatrix);
+		
+		double[] newO = new double[2];
+		newO[0] = Math.min(Math.min(E[0], newF[0]),Math.min(newG[0], newH[0]));
+		newO[1] = Math.min(Math.min(E[1], newF[1]),Math.min(newG[1], newH[1]));
+		
+		int[] paralelogramo = new int[2];
+		paralelogramo[0] = (int)Math.ceil(Math.abs(Math.max(Math.max(E[0],newF[0]),Math.max(newG[0],newH[0])) - Math.min(Math.min(E[0],newF[0]),Math.min(newG[0],newH[0]))));
+		paralelogramo[1] = (int)Math.ceil(Math.abs(Math.max(Math.max(E[1],newF[1]),Math.max(newG[1],newH[1])) - Math.min(Math.min(E[1],newF[1]),Math.min(newG[1],newH[1]))));
+		
+		BufferedImage img = new BufferedImage(paralelogramo[0], paralelogramo[1], BufferedImage.TYPE_INT_RGB);
+		Color valor = new Color(255,255,255);
+		for(int x = 0; x < paralelogramo[0]; x++) {
+			for(int y = 0; y < paralelogramo[1]; y++) {
+				img.setRGB(x, y, valor.getRGB());
+			}
+		}
+		
+		int[] newNivelGris = new int[paralelogramo[0]*paralelogramo[1]];
+		
+		for(int x = 0; x < getImageActual().getWidth(); x++) {
+			for(int y = 0; y < getImageActual().getHeight(); y++) {
+				
+				double[] coordOrig = new double[2];
+				coordOrig[0] = x;
+				coordOrig[1] = y;
+				
+				double[] coordDest = new double[2];
+				int[] intCoordDest = new int[2];
+				
+				coordDest = multMatriz(coordOrig,rotMatrix);
+				coordDest[0] -= newO[0];
+				coordDest[1] -= newO[1];
+				
+				intCoordDest[0] = (int)Math.round(coordDest[0]);
+				intCoordDest[1] = (int)Math.round(coordDest[1]);
+				
+				if(intCoordDest[0] == paralelogramo[0]) intCoordDest[0]--; 
+				if(intCoordDest[1] == paralelogramo[1]) intCoordDest[1]--; 
+				
+				img.setRGB(intCoordDest[0], intCoordDest[1], getImageActual().getRGB(x, y));
+				newNivelGris[intCoordDest[1]*paralelogramo[0]+intCoordDest[0]] = (new Color(getImageActual().getRGB(x, y))).getRed();
+			}
+		}
+		
+		this.setTam(paralelogramo);
+		this.setImageActual(img);
+		nivelGris = newNivelGris;
+		escalaGrises();
+		//this.arrayGrises[255] = blancos(i, (int)angulo);
+		//this.fillArrayGrisesAcumulativo();
+		
+	}
+	
 	public double[] multMatriz(double[] coord, double[][] rotMatrix) {
 		double xCoord = rotMatrix[0][0]*coord[0] + rotMatrix[0][1]*coord[1];
 		double yCoord = rotMatrix[1][0]*coord[0] + rotMatrix[1][1]*coord[1];

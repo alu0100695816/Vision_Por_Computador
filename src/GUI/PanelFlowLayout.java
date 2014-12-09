@@ -25,7 +25,7 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private JMenuBar barra1;
     private JMenu menu;
-    private JMenuItem abrir, gris, info, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm, tramos, mapacamb, evertical, ehorizontal, trasp, rotAbs, rotDer, rotIzq, escalado, rotacion;
+    private JMenuItem abrir, gris, info, ROI, histogram, histogramAc, bc, eqAc, espHist, guardar, gamma, dif, cerrar, histogramAcNorm, tramos, mapacamb, evertical, rotDir, ehorizontal, trasp, rotAbs, rotDer, rotIzq, escalado, rotacion;
     private JDesktopPane panel;
     private JFrame frame = new JFrame();
     
@@ -148,6 +148,10 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
     		   rotAbs= new JMenuItem("Rotacion Absoluta");
     		   menu.add(rotAbs);
     		   rotAbs.addActionListener(this);
+    		   
+    		   rotDir= new JMenuItem("Rotacion Directa");
+    		   menu.add(rotDir);
+    		   rotDir.addActionListener(this);
     		   
     		   escalado= new JMenuItem("Operacion de escalado");
     		   menu.add(escalado);
@@ -535,6 +539,29 @@ public class PanelFlowLayout extends JFrame implements MouseListener {
 				else finalOpcion = true;
 				
 				((FrameInterno)(panel.getSelectedFrame())).getImg().rotacionAbsoluta(finalOpcion, angulo, finalInterpolacion);
+				((FrameInterno)(panel.getSelectedFrame())).actualize();
+			}
+			else if(e.getSource() == rotDir) {
+				clonar();
+				double angulo;
+				String opcion;
+				
+				do{
+					opcion = JOptionPane.showInputDialog("Rotar a izquierda (i) o derecha (d)");
+					if(opcion.equals("d") && opcion.equals("derecha") && opcion.equals("i") && opcion.equals("izquierda")) JOptionPane.showMessageDialog(panel, "Error: introduce \"d\", \"derecha\", \"i\" o \"izquierda\"");
+				}while(opcion.equals("d") && opcion.equals("derecha") && opcion.equals("i") && opcion.equals("izquierda"));
+				
+				do{
+					angulo = Integer.parseInt(JOptionPane.showInputDialog("�ngulo a rotar:"));
+					if(angulo < 0 || angulo > 359) JOptionPane.showMessageDialog(panel, "Error: Introduce un �ngulo entre 0 y 359");
+				}while(angulo < 0 || angulo > 359);
+				
+				boolean finalOpcion;
+				
+				if(opcion.equals("d") || opcion.equals("derecha")) finalOpcion = false;
+				else finalOpcion = true;
+				
+				((FrameInterno)(panel.getSelectedFrame())).getImg().rotacionDirecta(finalOpcion, angulo);
 				((FrameInterno)(panel.getSelectedFrame())).actualize();
 			}
 		}
